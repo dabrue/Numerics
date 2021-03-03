@@ -139,7 +139,7 @@ if (__name__ == '__main__'):
     ######################################################################################
     # Moving on to quadratures
 
-    Nfunc = 5
+    Nfunc = 4
     Npts = 10001
     xmin = -1
     xmax = 1
@@ -201,4 +201,9 @@ if (__name__ == '__main__'):
     for i in range(len(lx_eig)):
         print(lx_eig[i]/lxs_eig[i])
 
+    LXD = np.matmul(lx_vec.transpose(),np.matmul(LX,lx_vec))
+    LXDS = np.matmul(lxs_vec.transpose(),np.matmul(LXS,lxs_vec))
+
+    print('\nLXD\n',LXD)
+    print('\nLXDS\n',LXDS)
     #plt.show()
