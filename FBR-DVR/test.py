@@ -127,8 +127,8 @@ if (__name__ == '__main__'):
         for m in range(Nfunc):
             LegNorms[n,m] = math.fsum(Lray[n]*Lray[m]*Lweight)*dx/normConstant
             LegNormsT[n,m] = int_trapazoid(xray,Lray[n],Lray[m],Lweight)/normConstant
-    print("\nLegendre Norms:\n",LegNorms)
-    print("\nLegendre Norms TRAPAZOIDAL:\n",LegNormsT)
+    print("\nLegendre Norms MIDPOINT integrate:\n",LegNorms)
+    print("\nLegendre Norms TRAPAZOIDAL integrate:\n",LegNormsT)
 
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(1,1,1)
@@ -139,8 +139,8 @@ if (__name__ == '__main__'):
     ######################################################################################
     # Moving on to quadratures
 
-    Nfunc = 3
-    Npts = 1001
+    Nfunc = 5
+    Npts = 10001
     xmin = -1
     xmax = 1
     dx = (xmax-xmin)/(Npts-1)
@@ -159,19 +159,46 @@ if (__name__ == '__main__'):
     # Let's find the eigenvalues of the position operator. The position operator is 
     # simply the function x(x), or the values of x at the abscissa points. 
     LX = np.zeros((Nfunc,Nfunc),dtype=np.float)
-    LX2 = np.zeros((Nfunc,Nfunc),dtype=np.float)
+    LXS = np.zeros((Nfunc,Nfunc),dtype=np.float)
     wxtmp = xray * Lweight
     for n in range(Nfunc):
         normConstant = 2.0/(2.0*n+1)
         for m in range(Nfunc):
-            #LX[n,m] = int_trapazoid(xray,Lray[n],Lray[m],Lweight)/normConstant
-            LX2[n,m] = math.fsum(xray*Lray[n]*Lray[m]*Lweight)*dx/normConstant
             LX[n,m] = int_trapazoid(xray,Lray[n],Lray[m],wxtmp)/normConstant
+            #LX[m,n] = int_trapazoid(xray,Lray[n],Lray[m],wxtmp)/normConstant
+    for n in range(Nfunc):
+        for m in range(n+1):
+            LXS[n,m] = LX[n,m]
+            LXS[m,n] = LX[n,m]
 
-    lx_eig, lx_vec = sp.linalg.eigh(LX)
-    print("\nLX EIGENVALUES\n",lx_eig)
-    lx_eig, lx_vec = sp.linalg.eigh(LX2)
-    print("\nLX EIGENVALUES 2\n",lx_eig)
+    print('\nLX\n',LX)
+    try:
+        lx_eig, lx_vec = sp.linalg.eig(LX)
+        lxs_eig, lxs_vec = sp.linalg.eigh(LXS)
+    except LinAlgError:
+        print('ERROR: Failed to compute eigenvalues, eigenvectors')
+        exit()
+    except:
+        raise
 
+    lx_eig = np.real(lx_eig)
+    VTV = np.matmul(lx_vec.transpose(),lx_vec)
+    VVT = np.matmul(lx_vec,lx_vec.transpose())
+    VTVS = np.matmul(lxs_vec.transpose(),lxs_vec)
+    VVTS = np.matmul(lxs_vec,lxs_vec.transpose())
+
+
+    print('\nLX EIGENVALUES\n',lx_eig)
+    print('\nLXS  EIGENVALUES\n',lxs_eig)
+    print('\nLX EIGENVECTORS\n',lx_vec)
+    print('\nLXS  EIGENVECTORS\n',lxs_vec)
+    print('\nVT*V\n',VTV)
+    print('\nS VT*V\n',VTVS)
+    print('\nV*VT\n',VVT)
+    print('\nS V*VT\n',VVTS)
+
+    # NOTE OK, so why are the eigenvectors not orthonormal?
+    for i in range(len(lx_eig)):
+        print(lx_eig[i]/lxs_eig[i])
 
     #plt.show()
