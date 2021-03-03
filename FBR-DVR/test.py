@@ -31,7 +31,7 @@ def int_trapazoid(X, A, B, W):
 
 
 ##########################################################################################
-# MAIN DRIVER
+# MAIN
 if (__name__ == '__main__'):
 
     # First let us see how calling the built-in special functions works
@@ -80,11 +80,11 @@ if (__name__ == '__main__'):
     HermiteNorms2 = np.zeros((NHermites,NHermites),dtype=np.float)
 
     for i in range(NHermites):
-        norm_constant= 2**i * math.factorial(i)*math.sqrt(math.pi)
-        print('NC',i,norm_constant)
+        normConstant= 2**i * math.factorial(i)*math.sqrt(math.pi)
+        print('NC',i,normConstant)
         for j in range(NHermites):
-            HermiteNorms[i,j] = int_trapazoid(xray,Hray[i],Hray[j],wray) / norm_constant
-            HermiteNorms2[i,j] = sum(Hray[i]*Hray[j]*wray)*dx / (2**i * math.factorial(i)*math.sqrt(math.pi))
+            HermiteNorms[i,j] = int_trapazoid(xray,Hray[i],Hray[j],wray) / normConstant
+            HermiteNorms2[i,j] = math.fsum(Hray[i]*Hray[j]*wray)*dx / (2**i * math.factorial(i)*math.sqrt(math.pi))
 
     print(HermiteNorms)
     print("")
@@ -92,13 +92,86 @@ if (__name__ == '__main__'):
 
     i = 1
     j = 1
-    tmp = sum(Hray[i]*Hray[j]*wray)*dx / (2**i * math.factorial(i)*math.sqrt(math.pi))
+    tmp = math.fsum(Hray[i]*Hray[j]*wray)*dx / (2**i * math.factorial(i)*math.sqrt(math.pi))
     print('tmp int test',tmp)
 
-    fig = plt.figure()
-    ax0 = fig.add_subplot(1,1,1)
+    fig0 = plt.figure()
+    ax0 = fig0.add_subplot(1,1,1)
     for i in range(NHermites):
         plt.plot(xray,Hray[i])
-    plt.show()
+    #plt.show()
 
     # GOOD. Let's do the same with Lengendre polynomials
+
+    Nfunc = 4
+    Npts = 1001
+    xmin = -1
+    xmax = 1
+    dx = (xmax-xmin)/(Npts-1)
+    xray = np.linspace(xmin,xmax,Npts)
+    Lweight = np.ones_like(xray)
+    Legs = []
+    for i in range(Nfunc):
+        Legs.append(sps.legendre(i))
+    Lray = []
+    for i in range(Nfunc):
+        tray = np.zeros_like(xray)
+        for j in range(Npts):
+            tray[j] = Legs[i](xray[j])
+        Lray.append(tray)
+
+    LegNorms = np.zeros((Nfunc,Nfunc),dtype=np.float)
+    LegNormsT = np.zeros((Nfunc,Nfunc),dtype=np.float)
+    for n in range(Nfunc):
+        normConstant = 2.0/(2.0*n+1)
+        for m in range(Nfunc):
+            LegNorms[n,m] = math.fsum(Lray[n]*Lray[m]*Lweight)*dx/normConstant
+            LegNormsT[n,m] = int_trapazoid(xray,Lray[n],Lray[m],Lweight)/normConstant
+    print("\nLegendre Norms:\n",LegNorms)
+    print("\nLegendre Norms TRAPAZOIDAL:\n",LegNormsT)
+
+    fig1 = plt.figure()
+    ax1 = fig1.add_subplot(1,1,1)
+    for i in range(Nfunc):
+        plt.plot(xray,Lray[i])
+
+
+    ######################################################################################
+    # Moving on to quadratures
+
+    Nfunc = 3
+    Npts = 1001
+    xmin = -1
+    xmax = 1
+    dx = (xmax-xmin)/(Npts-1)
+    xray = np.linspace(xmin,xmax,Npts)
+    Lweight = np.ones_like(xray)
+    Legs = []
+    for i in range(Nfunc):
+        Legs.append(sps.legendre(i))
+    Lray = []
+    for i in range(Nfunc):
+        tray = np.zeros_like(xray)
+        for j in range(Npts):
+            tray[j] = Legs[i](xray[j])
+        Lray.append(tray)
+
+    # Let's find the eigenvalues of the position operator. The position operator is 
+    # simply the function x(x), or the values of x at the abscissa points. 
+    LX = np.zeros((Nfunc,Nfunc),dtype=np.float)
+    LX2 = np.zeros((Nfunc,Nfunc),dtype=np.float)
+    wxtmp = xray * Lweight
+    for n in range(Nfunc):
+        normConstant = 2.0/(2.0*n+1)
+        for m in range(Nfunc):
+            #LX[n,m] = int_trapazoid(xray,Lray[n],Lray[m],Lweight)/normConstant
+            LX2[n,m] = math.fsum(xray*Lray[n]*Lray[m]*Lweight)*dx/normConstant
+            LX[n,m] = int_trapazoid(xray,Lray[n],Lray[m],wxtmp)/normConstant
+
+    lx_eig, lx_vec = sp.linalg.eigh(LX)
+    print("\nLX EIGENVALUES\n",lx_eig)
+    lx_eig, lx_vec = sp.linalg.eigh(LX2)
+    print("\nLX EIGENVALUES 2\n",lx_eig)
+
+
+    #plt.show()
