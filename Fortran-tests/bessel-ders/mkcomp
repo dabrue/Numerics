@@ -1,0 +1,6 @@
+cat bessJ_int >> J6int
+echo "&" >> J6int
+cat dbessJ1_int >> J6int
+echo "&" >> J6int
+cat dbessJ2_int >> J6int
+echo "&" >> J6int

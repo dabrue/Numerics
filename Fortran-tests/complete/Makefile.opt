@@ -1,0 +1,80 @@
+# Intel FORTRAN Compiler.
+ifeq ($(FC),ifort)
+    FFLAGS    = -g
+    INCDIR    =
+    LD        =  ifort
+    LDFLAGS   = -g
+    DEBUGSTAT =
+endif
+
+# Intel FORTRAN Compiler.
+ifeq ($(FC),mpiifort)
+    FFLAGS    = -g
+    INCDIR    =
+    LD        =  mpiifort
+    LDFLAGS   = -g
+    DEBUGSTAT =
+endif
+
+# Intel FORTRAN90 MPI Compiler.
+ifeq ($(FC),mpif90)
+    FFLAGS    =
+    INCDIR    =
+    LD        =
+    LDFLAGS   =
+    DEBUGSTAT =
+endif
+
+# Portland Group High-Performance FORTRAN Compiler.
+ifeq ($(FC),pghpf)
+    FFLAGS    =
+    INCDIR    =
+    LD        = pghpf
+    LDFLAGS   =
+    DEBUGSTAT =
+endif
+
+# Portland Group FORTRAN90 Compiler.
+ifeq ($(FC),pgf90)
+    FFLAGS    =
+    INCDIR    =
+    LD        = pgf90
+    LDFLAGS   =
+    DEBUGSTAT =
+endif
+
+# Intel FORTRAN77 MPI Compiler.
+ifeq ($(FC),mpif77)
+    FFLAGS    =
+    INCDIR    =
+    LD        =
+    LDFLAGS   =
+    DEBUGSTAT =
+endif
+
+# Portland Group FORTRAN77 Compiler
+ifeq ($(FC),pgf77)
+    FFLAGS    =
+    INCDIR    =
+    LD        =
+    LDFLAGS   =
+    DEBUGSTAT =
+endif
+
+# GNU FORTRAN77 Compiler.
+ifeq ($(FC),g77)
+    FFLAGS    =
+    INCDIR    =
+    LD        = g77
+    LDFLAGS   =
+    DEBUGSTAT =
+endif
+
+# GNU FORTRAN Compiler.
+ifeq ($(FC),gfort)
+    FFLAGS    = -g
+    INCDIR    =
+    LD        =  gfort
+    LDFLAGS   = -g
+    DEBUGSTAT =
+endif

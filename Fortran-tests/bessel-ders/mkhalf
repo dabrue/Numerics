@@ -1,0 +1,6 @@
+cat bessJ_halfint >> J6halfint
+echo "&" >> J6halfint
+cat dbessJ1_halfint >> J6halfint
+echo "&" >> J6halfint
+cat dbessJ2_halfint >> J6halfint
+echo "&" >> J6halfint

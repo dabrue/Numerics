@@ -1,0 +1,50 @@
+This is TeX, Version 3.14159 (Web2C 7.3.1) (format=latex 2006.1.23)  17 OCT 2006 00:29
+**daftest2.f90 daf_deltas.f90 numeric_kinds_module.f90
+(/usr/share/texmf/tex/latex/tools/q.tex
+LaTeX2e <2001/06/01>
+Babel <v3.7h> and hyphenation patterns for american, french, german, ngerman, i
+talian, nohyphenation, loaded.
+File ignored
+)
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+<*> daftest2.f90 d
+                  af_deltas.f90 numeric_kinds_module.f90
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+Missing character: There is no d in font nullfont!
+Missing character: There is no a in font nullfont!
+Missing character: There is no f in font nullfont!
+! Missing $ inserted.
+<inserted text> 
+                $
+<*> daftest2.f90 daf_
+                     deltas.f90 numeric_kinds_module.f90
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 0.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 0.
+! Emergency stop.
+<*> ...f90 daf_deltas.f90 numeric_kinds_module.f90
+                                                  
+*** (job aborted, no legal \end found)
+
+ 
+Here is how much of TeX's memory you used:
+ 8 strings out of 20880
+ 117 string characters out of 197306
+ 44237 words of memory out of 350001
+ 3037 multiletter control sequences out of 10000+15000
+ 3640 words of font info for 14 fonts, out of 400000 for 1000
+ 14 hyphenation exceptions out of 10000
+ 17i,1n,12p,132b,57s stack positions out of 3000i,100n,1500p,50000b,4000s
+No pages of output.
