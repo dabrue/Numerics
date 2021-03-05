@@ -83,6 +83,7 @@ if (__name__ == '__main__'):
         normConstant= 2**i * math.factorial(i)*math.sqrt(math.pi)
         print('NC',i,normConstant)
         for j in range(NHermites):
+            # Comparing two integration methods: trapazoidal and midpoint
             HermiteNorms[i,j] = int_trapazoid(xray,Hray[i],Hray[j],wray) / normConstant
             HermiteNorms2[i,j] = math.fsum(Hray[i]*Hray[j]*wray)*dx / (2**i * math.factorial(i)*math.sqrt(math.pi))
 
@@ -101,6 +102,7 @@ if (__name__ == '__main__'):
         plt.plot(xray,Hray[i])
     #plt.show()
 
+##########################################################################################
     # GOOD. Let's do the same with Lengendre polynomials
 
     Nfunc = 4
@@ -162,14 +164,27 @@ if (__name__ == '__main__'):
     LXS = np.zeros((Nfunc,Nfunc),dtype=np.float64)
     wxtmp = xray * Lweight
     for n in range(Nfunc):
-        normConstant = 2.0/(2.0*n+1)
+        #normConstant = 2.0/(2.0*n+1)
         for m in range(Nfunc):
+            normConstant = math.sqrt(4.0/((2*n+1)*(2*m+1)))
             LX[n,m] = int_trapazoid(xray,Lray[n],Lray[m],wxtmp)/normConstant
             #LX[m,n] = int_trapazoid(xray,Lray[n],Lray[m],wxtmp)/normConstant
+
+    # Force symmetry for the LXS matrix
     for n in range(Nfunc):
         for m in range(n+1):
             LXS[n,m] = LX[n,m]
             LXS[m,n] = LX[n,m]
+
+    # Try removing small elements? 
+    if ( True ): 
+        tolerance=1.0e-12
+        for n in range(Nfunc):
+                for m in range(Nfunc):
+                    if (math.fabs(LX[m,n]) < tolerance):
+                        LX[m,n]=0.0
+                    if (math.fabs(LXS[m,n]) < tolerance):
+                        LXS[m,n]=0.0
 
     print('\nLX\n',LX)
     try:
@@ -188,14 +203,14 @@ if (__name__ == '__main__'):
     VVTS = np.matmul(lxs_vec,lxs_vec.transpose())
 
 
-    print('\nLX EIGENVALUES\n',lx_eig)
-    print('\nLXS  EIGENVALUES\n',lxs_eig)
+    print('\nLX EIGENVALUES, Generalized solver sp.la.eig\n',lx_eig)
+    print('\nLX SYMMETRY-FORCED EIGENVALUES\n',lxs_eig)
     print('\nLX EIGENVECTORS\n',lx_vec)
-    print('\nLXS  EIGENVECTORS\n',lxs_vec)
+    print('\nLXS  SYMMETRY-FORCED EIGENVECTORS, sp.la.eigh\n',lxs_vec)
     print('\nVT*V\n',VTV)
-    print('\nS VT*V\n',VTVS)
+    print('\nSYMMETRY-FORCED  VT*V\n',VTVS)
     print('\nV*VT\n',VVT)
-    print('\nS V*VT\n',VVTS)
+    print('\nSYMMETRY-FORCED  V*VT\n',VVTS)
 
     # NOTE OK, so why are the eigenvectors not orthonormal?
     for i in range(len(lx_eig)):
@@ -204,6 +219,6 @@ if (__name__ == '__main__'):
     LXD = np.matmul(lx_vec.transpose(),np.matmul(LX,lx_vec))
     LXDS = np.matmul(lxs_vec.transpose(),np.matmul(LXS,lxs_vec))
 
-    print('\nLXD\n',LXD)
-    print('\nLXDS\n',LXDS)
+    print('\nLX Diagonalized by eigenvectors of eig\n',LXD)
+    print('\nLX SYM Diagonalized by eigenvectors of eigh\n',LXDS)
     plt.show()
