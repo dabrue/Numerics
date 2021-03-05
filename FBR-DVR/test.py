@@ -168,7 +168,6 @@ if (__name__ == '__main__'):
         for m in range(Nfunc):
             normConstant = math.sqrt(4.0/((2*n+1)*(2*m+1)))
             LX[n,m] = int_trapazoid(xray,Lray[n],Lray[m],wxtmp)/normConstant
-            #LX[m,n] = int_trapazoid(xray,Lray[n],Lray[m],wxtmp)/normConstant
 
     # Force symmetry for the LXS matrix
     for n in range(Nfunc):
@@ -177,7 +176,7 @@ if (__name__ == '__main__'):
             LXS[m,n] = LX[n,m]
 
     # Try removing small elements? 
-    if ( True ): 
+    if ( False ): 
         tolerance=1.0e-12
         for n in range(Nfunc):
                 for m in range(Nfunc):
@@ -187,6 +186,7 @@ if (__name__ == '__main__'):
                         LXS[m,n]=0.0
 
     print('\nLX\n',LX)
+    print('\nLX Sym-Forced\n',LXS)
     try:
         lx_eig, lx_vec = sp.linalg.eig(LX)
         lxs_eig, lxs_vec = sp.linalg.eigh(LXS)
@@ -204,8 +204,8 @@ if (__name__ == '__main__'):
 
 
     print('\nLX EIGENVALUES, Generalized solver sp.la.eig\n',lx_eig)
-    print('\nLX SYMMETRY-FORCED EIGENVALUES\n',lxs_eig)
-    print('\nLX EIGENVECTORS\n',lx_vec)
+    print('\nLX SYMMETRY-FORCED EIGENVALUES solver sp.la.eigh\n',lxs_eig)
+    print('\nLX EIGENVECTORS, sp.la.eig\n',lx_vec)
     print('\nLXS  SYMMETRY-FORCED EIGENVECTORS, sp.la.eigh\n',lxs_vec)
     print('\nVT*V\n',VTV)
     print('\nSYMMETRY-FORCED  VT*V\n',VTVS)
