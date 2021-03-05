@@ -158,8 +158,8 @@ if (__name__ == '__main__'):
 
     # Let's find the eigenvalues of the position operator. The position operator is 
     # simply the function x(x), or the values of x at the abscissa points. 
-    LX = np.zeros((Nfunc,Nfunc),dtype=np.float)
-    LXS = np.zeros((Nfunc,Nfunc),dtype=np.float)
+    LX = np.zeros((Nfunc,Nfunc),dtype=np.float64)
+    LXS = np.zeros((Nfunc,Nfunc),dtype=np.float64)
     wxtmp = xray * Lweight
     for n in range(Nfunc):
         normConstant = 2.0/(2.0*n+1)
@@ -181,7 +181,7 @@ if (__name__ == '__main__'):
     except:
         raise
 
-    lx_eig = np.real(lx_eig)
+    lx_eig = np.real(lx_eig)  # The eigenvalues from eig are complex, keep the real part. 
     VTV = np.matmul(lx_vec.transpose(),lx_vec)
     VVT = np.matmul(lx_vec,lx_vec.transpose())
     VTVS = np.matmul(lxs_vec.transpose(),lxs_vec)
@@ -206,4 +206,4 @@ if (__name__ == '__main__'):
 
     print('\nLXD\n',LXD)
     print('\nLXDS\n',LXDS)
-    #plt.show()
+    plt.show()
