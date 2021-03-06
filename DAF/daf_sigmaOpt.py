@@ -10,14 +10,12 @@ import numpy as np
 import scipy as sp
 import scipy.special as sps
 
-def SigmaOptHermite(Xray):
-    sigma = None
+def sigmaOptHermite(Xray,M=None, sigma=None):
+    if ( not M
     return sigma
 
-def SigmaOptLaguerre(Xray):
-    sigma = None
+def sigmaOptLaguerre(Xray,M=None, sigma=None):
     return sigma
-
 
 if (__name__ == '__main__'):
     
