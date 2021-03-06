@@ -140,6 +140,9 @@ if (__name__ == '__main__'):
 
     ######################################################################################
     # Moving on to quadratures
+    print(90*'#'+\n)
+    print("Finding Gauss-Legendre quadrature points, testing eigenvalue routines")
+    print(90*'#'+\n)
 
     Nfunc = 4
     Npts = 10001
@@ -221,4 +224,91 @@ if (__name__ == '__main__'):
 
     print('\nLX Diagonalized by eigenvectors of eig\n',LXD)
     print('\nLX SYM Diagonalized by eigenvectors of eigh\n',LXDS)
+    plt.show()
+
+    ######################################################################################
+    # Repeat with Chebyshev polynomials
+    print(90*'#'+\n)
+    print("Repeated Process with Chebyshev First Kind")
+    print(90*'#'+\n)
+    Nfunc = 4
+    Npts = 10001
+    xmin = -1
+    xmax = 1
+    dx = (xmax-xmin)/(Npts-1)
+    xray = np.linspace(xmin,xmax,Npts)
+    Tweight = np.zeros_like(xray)
+    Chebys = []
+    for i in range(Nfunc):
+        Chebys.append(sps.chebyt(i))
+    Tray = []
+    for i in range(Nfunc):
+        tray = np.zeros_like(xray)
+        for j in range(Npts):
+            tray[j] = Chebys[i](xray[j])
+        Lray.append(tray)
+
+    # Let's find the eigenvalues of the position operator. The position operator is 
+    # simply the function x(x), or the values of x at the abscissa points. 
+    TX = np.zeros((Nfunc,Nfunc),dtype=np.float64)
+    TXS = np.zeros((Nfunc,Nfunc),dtype=np.float64)
+    wxtmp = xray * Lweight
+    for n in range(Nfunc):
+        #normConstant = 2.0/(2.0*n+1)
+        for m in range(Nfunc):
+            normConstant = math.sqrt(4.0/((2*n+1)*(2*m+1)))
+            TX[n,m] = int_trapazoid(xray,Lray[n],Lray[m],wxtmp)/normConstant
+
+    # Force symmetry for the LXS matrix
+    for n in range(Nfunc):
+        for m in range(n+1):
+            TXS[n,m] = TX[n,m]
+            TXS[m,n] = TX[n,m]
+
+    # Try removing small elements? 
+    if ( False ): 
+        tolerance=1.0e-12
+        for n in range(Nfunc):
+                for m in range(Nfunc):
+                    if (math.fabs(LX[m,n]) < tolerance):
+                        TX[m,n]=0.0
+                    if (math.fabs(LXS[m,n]) < tolerance):
+                        TXS[m,n]=0.0
+
+    print('\nTX\n',TX)
+    print('\nTX Sym-Forced\n',TXS)
+    try:
+        tx_eig, tx_vec = sp.linalg.eig(TX)
+        txs_eig, txs_vec = sp.linalg.eigh(TXS)
+    except LinAlgError:
+        print('ERROR: Failed to compute eigenvalues, eigenvectors')
+        exit()
+    except:
+        raise
+
+    tx_eig = np.real(tx_eig)  # The eigenvalues from eig are complex, keep the real part. 
+    VTV = np.matmul(tx_vec.transpose(),tx_vec)
+    VVT = np.matmul(tx_vec,tx_vec.transpose())
+    VTVS = np.matmul(txs_vec.transpose(),txs_vec)
+    VVTS = np.matmul(txs_vec,txs_vec.transpose())
+
+
+    print('\nTX EIGENVALUES, Generalized solver sp.la.eig\n',tx_eig)
+    print('\nTX SYMMETRY-FORCED EIGENVALUES solver sp.la.eigh\n',txs_eig)
+    print('\nTX EIGENVECTORS, sp.la.eig\n',tx_vec)
+    print('\nTXS  SYMMETRY-FORCED EIGENVECTORS, sp.la.eigh\n',txs_vec)
+    print('\nVT*V\n',VTV)
+    print('\nSYMMETRY-FORCED  VT*V\n',VTVS)
+    print('\nV*VT\n',VVT)
+    print('\nSYMMETRY-FORCED  V*VT\n',VVTS)
+
+    # NOTE OK, so why are the eigenvectors not orthonormal?
+    for i in range(len(tx_eig)):
+        print(tx_eig[i]/txs_eig[i])
+
+    TXD = np.matmul(tx_vec.transpose(),np.matmul(TX,tx_vec))
+    TXDS = np.matmul(txs_vec.transpose(),np.matmul(TXS,txs_vec))
+
+    print('\nTX Diagonalized by eigenvectors of eig\n',TXD)
+    print('\nTX SYM Diagonalized by eigenvectors of eigh\n',TXDS)
     plt.show()
