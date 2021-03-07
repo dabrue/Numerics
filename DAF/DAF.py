@@ -36,9 +36,9 @@ MaxChebyshevExpansion = 101
 # is easier. A few extra bytes is worth avoiding indexing pitfalls. 
 
 # Hermite Dirac-Delta function expansion coefficients
-HdeltaC_part = np.zeros(MaxHermiteExpansion, dtype=np.float64)
+HdeltaCoef_part = np.zeros(MaxHermiteExpansion, dtype=np.float64)
 for i in range(0,MaxHermiteExpansion,2):
-    HdeltaCoef_part[i] = sps.eval_hermite(i,0.0)/(2**i * math.fac(i)* rtpi)
+    HdeltaCoef_part[i] = sps.eval_hermite(i,0.0)/(2**i * math.factorial(i)* rtpi)
 
 '''
 LdeltaC_part = np.zeros(MaxLaguerreExpansion, dtype=np.float64)
@@ -67,8 +67,15 @@ def _exp_Hermite_delta(x,M):
     H=[]
     H.append(1.0)
     H.append(x)
+
+    # Use the recursion formula to get values of hermite polinomials at give x 
     for n in range(2,M+1):
-        H.append( (2*x*H[-1] - 2*(n-2)*H[-2])
+        H.append( (2*x*H[-1] - 2*(n-2)*H[-2]) )
+
+    # Add the normalization factor so that int(Hn Hm W) = 1
+    for n in range(0,len(H),2):
+        H[i] *= (1.0/(2**n * math.factorial(n) * rtpi))
+        
     H = np.array(H)  # Change to numpy data type
     return H
 
