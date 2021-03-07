@@ -12,7 +12,10 @@ import scipy.special as sps
 import matplotlib.pyplot as plt
 import DAF
 
-def sinusoidal_delta(Xray):
+pi = math.pi
+rtpi = math.sqrt(math.pi)
+
+def sinusoidal_delta(Nx:int,Mexpand:int):
     # Test expanding the delta function in trig functions. 
 
     # USEFUL IDENTITIES
@@ -21,9 +24,14 @@ def sinusoidal_delta(Xray):
     # cos(a)cos(b) = (cos(a-b) + cos(a+b)) / 2
     
     # Check orthonormality of cosines. Since sine curves are antisymmetric only cosines here
-    Mexpand = 50
     Mp1 = Mexpand +1
-    S = np.zeros((Mp1,MP1),dtype=np.float64)
+    CosX = np.zeros((Mp1,MP1),dtype=np.float64)
+
+    Xmin = -pi
+    Xmax = pi
+    Xray = np.linspace(Xmin,Xmax,Nx)
+
+    # Determine delta function expansion coefficients for a cosine
     
 
 if (__name__ == '__main__'):
