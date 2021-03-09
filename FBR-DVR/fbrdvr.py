@@ -18,7 +18,6 @@ def Legendre(PolyDegreeP1,Xray):
     construct an orthonormal function set.
     '''
 
-    # NOTE: This is a good candidate for parrallelization with multiproc pool
     fbrdvr=np.zeros((PolyDegreeP1, len(Xray)),dtype=np.float64)
     for n in range(PolyDegreeP1):
         normConstant = math.sqrt(2/(2*n+1))

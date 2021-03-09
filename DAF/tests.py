@@ -25,7 +25,7 @@ def sinusoidal_delta(Nx:int,Mexpand:int):
     
     # Check orthonormality of cosines. Since sine curves are antisymmetric only cosines here
     Mp1 = Mexpand +1
-    CosX = np.zeros((Mp1,Mp1),dtype=np.float64)
+    #CosX = np.zeros((Mp1,Mp1),dtype=np.float64)
 
     Xmin = -pi
     Xmax = pi
@@ -33,7 +33,7 @@ def sinusoidal_delta(Nx:int,Mexpand:int):
 
     # Determine delta function expansion coefficients for a cosine
     cosn=np.zeros_like(Xray)
-    cosn=cosn+0.5
+    #cosn=cosn+1.0/(2) #*pi)  # This is the normalized cos(0*x) term
     for n in range(1,Mp1):
         for i in range(len(Xray)):
             cosn[i] += math.cos(n*Xray[i])
@@ -66,6 +66,6 @@ if (__name__ == '__main__'):
 
     print('Module Load Successful\n\nSTARTING DAF TESTS...\n')
 
-    Npts=10001
-    Mexpand = 500
+    Npts=501
+    Mexpand = 200000
     rtn = sinusoidal_delta(Npts,Mexpand)
