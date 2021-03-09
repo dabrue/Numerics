@@ -25,13 +25,22 @@ def sinusoidal_delta(Nx:int,Mexpand:int):
     
     # Check orthonormality of cosines. Since sine curves are antisymmetric only cosines here
     Mp1 = Mexpand +1
-    CosX = np.zeros((Mp1,MP1),dtype=np.float64)
+    CosX = np.zeros((Mp1,Mp1),dtype=np.float64)
 
     Xmin = -pi
     Xmax = pi
     Xray = np.linspace(Xmin,Xmax,Nx)
 
     # Determine delta function expansion coefficients for a cosine
+    n=5
+    cosn=np.zeros_like(Xray)
+    for i in range(len(Xray)):
+        cosn[i] = math.cos(n*Xray[i])
+
+    fig0 = plt.figure()
+    axc0 = fig0.add_subplot(1,1,1)
+    plt.plot(Xray,cosn)
+    plt.show()
     
 
 if (__name__ == '__main__'):
@@ -52,16 +61,6 @@ if (__name__ == '__main__'):
 
     print('Module Load Successful\n\nSTARTING DAF TESTS...\n')
 
-    # First, get a Hermite expansion of the Delta functions
-
-    pi = math.pi
-    rtpi = math.sqrt(math.pi)
-
-    Xray = np.linspace(-pi,pi,101)
-
-    figHDelta = plt.figure()
-    axHdelta  = figHDelta.add_subplot(1,1,1)
-
-
-
-    
+    Npts=101
+    Mexpand = 50
+    rtn = sinusoidal_delta(Npts,Mexpand)
