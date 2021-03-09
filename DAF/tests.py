@@ -32,10 +32,15 @@ def sinusoidal_delta(Nx:int,Mexpand:int):
     Xray = np.linspace(Xmin,Xmax,Nx)
 
     # Determine delta function expansion coefficients for a cosine
-    n=5
     cosn=np.zeros_like(Xray)
-    for i in range(len(Xray)):
-        cosn[i] = math.cos(n*Xray[i])
+    cosn=cosn+0.5
+    for n in range(1,Mp1):
+        for i in range(len(Xray)):
+            cosn[i] += math.cos(n*Xray[i])
+
+    t = int((Nx-1)/2)
+    print('t index =',t)
+    cosn[t]=0.0
 
     fig0 = plt.figure()
     axc0 = fig0.add_subplot(1,1,1)
@@ -61,6 +66,6 @@ if (__name__ == '__main__'):
 
     print('Module Load Successful\n\nSTARTING DAF TESTS...\n')
 
-    Npts=101
-    Mexpand = 50
+    Npts=10001
+    Mexpand = 500
     rtn = sinusoidal_delta(Npts,Mexpand)
