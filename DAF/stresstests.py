@@ -2,7 +2,10 @@
 '''
 Tests run during the development of DAF code. Don't expect much of this to make sense. 
 
--- DAB
+This routine is intended to break the DAF, show what its limits are, and try to figure
+out new methods that may be employed. 
+
+Daniel Brue, March 2021
 '''
 
 import math
@@ -11,6 +14,7 @@ import scipy as sp
 import scipy.special as sps
 import matplotlib.pyplot as plt
 import DAF
+import exfunctions
 
 pi = math.pi
 rtpi = math.sqrt(math.pi)
@@ -46,6 +50,15 @@ def sinusoidal_delta(Nx:int,Mexpand:int):
     axc0 = fig0.add_subplot(1,1,1)
     plt.plot(Xray,cosn)
     plt.show()
+
+
+def stresstest1():
+    Nx=101
+    Xmin=-10
+    Xmax= 10
+    dX = (Xmax-Xmin)/(Nx-1)
+    Xray = np.linspace(Xmin,Xmax,Nx)
+    Fray = exfunctions.F1(Xray)
     
 
 if (__name__ == '__main__'):

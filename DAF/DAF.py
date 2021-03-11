@@ -11,6 +11,7 @@ import numpy as np
 import scipy as sp
 import scipy.special as sps
 import multiprocessing as mp
+import daf_sigmaOpt
 
 ##########################################################################################
 # PARAMETERS AND SETUP
@@ -52,10 +53,6 @@ for i in range(0,MaxLegendreExpansion,2):
     PdeltaC[i] = sps.eval_legendre(i,0.0) * (2*i + 1) / 2
 '''
 
-
-
-
-
 ##########################################################################################
 # SUBROUTINES FOR DAF GENERATION, INTERNAL USE INTENDED
 
@@ -74,7 +71,7 @@ def _exp_Hermite_delta(x,M):
 
     # Add the normalization factor so that int(Hn Hm W) = 1
     for n in range(0,len(H),2):
-        H[i] *= (1.0/(2**n * math.factorial(n) * rtpi))
+        H[n] *= (1.0/(2**n * math.factorial(n) * rtpi))
         
     H = np.array(H)  # Change to numpy data type
     return H
@@ -128,9 +125,11 @@ def gen_Hermite(Xray, M, DerOrder, sigma = None):
     # If sigma is specified, use it, otherwise find an optimal value
     if (not sigma):
         sigma = daf_sigmaOpt.sigmaOptHermite(Xray, M)
+    sigma=1.0
 
     # get the expansion coefficients
-    HC = _get_Hermite_delta(Xray, M) / sigma
+    HC = _exp_Hermite_delta(Xray, M) / sigma
+    return(np.array((1,1),dtype=np.float64))
 
 #-----------------------------------------------------------------------------------------
 def gen_Legendre(Xray, M, DerOrder):
@@ -143,20 +142,20 @@ def gen_Laguerre(Xray, M, DerOrder, sigma = None):
 
 class DAF:
 
-    def __init__(PolyBase:str,Xray:np.array,DerOrder=0,sigma=1.0,M=50):
+    def __init__(self,PolyBase:str,Xray:np.array,DerOrder=0,sigma=1.0,M=50):
         self.PolyBase = PolyBase
         self.Xray = Xray
         self.DerOrder = DerOrder
         self.sigma=1.0
         self.ExpOrder = M           
         if (PolyBase == 'hermite'):
-            DAFMAT = gen_Hermite(Xray, M, sigma)
+            self.DAFMAT = gen_Hermite(Xray, M, sigma)
         elif (PolyBase == 'legendre'):
-            DAFMAT = gen_Legendre(Xray, M)
+            self.DAFMAT = gen_Legendre(Xray, M)
         elif (PolyBase == 'laguerre'):
-            DAFMAT = gen_Laguerre(Xray, M, sigma)
+            self.DAFMAT = gen_Laguerre(Xray, M, sigma)
         elif (PolyBase == 'chebyshev'):
-            DAFMAT = gen_Chebyshev(Xray, M)
+            self.DAFMAT = gen_Chebyshev(Xray, M)
         else:
             raise('ERROR: Unidentified Polynomial Expansion : ', PolyBase)
             exit()

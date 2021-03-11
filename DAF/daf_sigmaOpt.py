@@ -11,7 +11,6 @@ import scipy as sp
 import scipy.special as sps
 
 def sigmaOptHermite(Xray,M=None, sigma=None):
-    if ( not M
     return sigma
 
 def sigmaOptLaguerre(Xray,M=None, sigma=None):
