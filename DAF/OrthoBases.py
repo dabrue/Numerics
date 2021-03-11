@@ -21,6 +21,11 @@ class Legendre_Basis:
         self.Order = Order
         self.normalized = normalized
         self.derivatives = derivatives
+        
+        if (derivatives > 0):
+            P
+
+    def _gen_P(Order, X):
 
 ##########################################################################################
 class Hermite_Basis:
@@ -33,7 +38,7 @@ class Hermite_Basis:
         self.normalized = normalized
         self.derivatives = derivatives
 
-    def _gen_h():
+    def _gen_H():
         pass
 
 ##########################################################################################
