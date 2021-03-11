@@ -14,7 +14,7 @@ import scipy as sp
 import scipy.special as sps
 import matplotlib.pyplot as plt
 import DAF
-import exfunctions
+#import exfunctions
 
 pi = math.pi
 rtpi = math.sqrt(math.pi)
@@ -81,7 +81,7 @@ if (__name__ == '__main__'):
 
     Npts=501
     Mexpand = 20000
-    #rtn = sinusoidal_delta(Npts,Mexpand)
+    rtn = sinusoidal_delta(Npts,Mexpand)
 
     # Next try the Hermite Expansion
 
