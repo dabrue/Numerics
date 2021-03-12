@@ -65,7 +65,7 @@ if (__name__ == '__main__'):
     Nx   = 101
     dx = (Xmax-Xmin)/(Nx-1)
     Xray = np.linspace(Xmin,Xmax,Nx)
-    Order = 5
+    Order = 15
     LegP = LegendreBasis(Xray, Order)
     Pfuncs = LegP._gen_P(Order, Xray)
     print(Pfuncs)
