@@ -46,6 +46,7 @@ def F1():
         Y1ray = numpy.zeros_like(Xray)
         Y2ray = numpy.zeros_like(Xray)
         for i in range(len(Nx)):
+            pass
         
 
     Nx = 1001

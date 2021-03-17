@@ -1,0 +1,950 @@
+\documentclass[preprint]{revtex4}
+\usepackage{amsmath}
+\usepackage{graphics}
+\newcommand{\dx}{{\rm d}x}
+\newcommand{\dy}{{\rm d}y}
+\newcommand{\intunit}{\ensuremath{\int_{-1}^{1}}}
+\newcommand{\sumunit}{\ensuremath{\sum_{i=1}^{n}}}
+\newcommand{\wbar}{\ensuremath{\bar{w}}}
+
+\begin{document}
+
+\title{DVR Method With Finite Elements and Lagrange Interpolating Polynomials}
+\author{Daniel A. Brue}
+\affiliation{Homer L. Dodge Department of Physics and Astronomy, University of Oklahoma}
+\date{\today}
+\maketitle
+
+\section{Lagrange Interpolating Polynomials}
+The use of the DVR \cite{DVR1986} method requires a set of orthogonal functions to 
+be used as a basis set. These basis functions are then used to construct the 
+matrix elements for the potential and kinetic energy operators of the Hamiltonian. 
+The Lagrange interpolating polynomials are a good choice for this because the 
+number and distributions of points is highly flexible, and the functions are
+orthogonal by definition. This method of using Lagrange interpolating polynomials for
+DVR methods was introduced by Rescigno and McCurdy in reference \cite{FEMDVR2000}. 
+Figure \ref{lip6} shows an example of six Lagrange interpolating
+polynomials over the range of -1 to 1. Each polynomial is defined by a set of 
+abscissa points, $\mathcal X$, and are frequently written as 
+\begin{equation}
+\label{lipdef}
+\lambda_k(x)=\prod_{j \ne k}^n\frac{(x-x_j)}{(x_k-x_j)},
+\end{equation}
+such that $\lambda_i(x_i)=1$ and $\lambda_i(x_{n\ne k})=0$ where $x_i$,$x_n\in \mathcal X$. 
+The interpolant of a set of points, $f(x_i)$ which are the functions values of $f$ defined
+at the set of points $\mathcal X$, can be constructed by summing over the interpolating
+polynomial functions as
+\begin{equation}
+\label{interpdef}
+F(x)=\sum_i^n \lambda_i(x)f(x_i)
+\end{equation}
+By this method, the points at which the function is known are reproduced exactly 
+and the function value at all points in between are defined by an $n^{th}$ order
+polynomial. 
+
+\begin{figure}[b]
+\includegraphics{lip6.eps}
+\caption {Plotted here are a set of six-point Lagrange Interpolating functions with
+abscissas equally spaced between -1 and 1. One function is equal to 1 at each of the
+six abscissas, and the rest of the functions are zero. To show this, the line $y=1$ is
+also plotted with points noting where each polynomial is 1. }
+\label{lip6}
+\end{figure}
+
+These functions are not orthogonal to each other with respect to the integral of 
+these functions over the region defined. However, if the integration is performed
+by a quadrature at the points of $\mathcal X$, then they {\it are} orthogonal, as
+the functions integrated over only share a non-zero value at the same $x_m$ if they 
+are the same function. This does not imply that these functions are normalized, 
+however, as the quadrature summation also includes weight factors, and thus, 
+\begin{equation}
+\label{liportho}
+\int_{a}^{b}\lambda_m(x)\lambda_n(x)\dx \ne \sum_j^n\lambda_m(x_j)\lambda_n(x_j)w_j = \delta_{nm}w_j
+\end{equation}
+Where for generality I have replaced the domain of $[-1,1]$ with $[a,b]$. The
+set of points $\mathcal X$ between $[-1,1]$ can be moved and scaled to arbitrary domains
+by a linear transformation. 
+
+As can be noted from figure \ref{lip6}, while the functions are zero at the 
+appropriate points, they can still have very significant amplitude between the points
+where they are required to be zero. For this reason, lower order polynomial 
+interpolants are often preferred to reduce ``ringing'' between adjacent points. 
+
+\section{Calculation of Quadrature Weights for Arbitrary Abscissas}
+The calculation of the integration weights can be done by creating a matrix of functions
+defined at the abscissa values, multiplying this matrix by the unknown array of weights, 
+and making this equal to the known values of the integrals. To ensure that the combination
+of $n$ weights and an arbitrarily spaced set of $n$ abscissas exactly integrate any 
+polynomial of degree $n-1$, we would use polynomials of degrees $0$ through $n-1$,
+labeled as $p_i$, for the functions in the matrix. The index represents the 
+order of the polynomial, so $p_0$ would be a constant function, and the matrix 
+of polynomials evaluated at the abscissa points would be, generally, 
+\begin{equation}
+\label{genPmat}
+{\bf P} = 
+\begin{pmatrix}
+p_0(x_1) & p_0(x_2) & \dots & p_0(x_n) \\
+p_1(x_1) & p_1(x_2) & \dots & p_1(x_n) \\
+\vdots & \vdots & \ddots & \vdots \\
+p_n(x_1) & p_n(x_2) & \dots & p_n(x_n) 
+\end{pmatrix}
+\end{equation}
+
+For example, a three point quadrature with three polynomials must solve the
+equation
+\begin{equation}
+\begin{pmatrix}
+p_0(x_1) & p_0(x_2) & p_0(x_3) \\
+p_1(x_1) & p_1(x_2) & p_1(x_3) \\
+p_2(x_1) & p_2(x_2) & p_2(x_3) 
+\end{pmatrix}
+\begin{pmatrix}
+w_1\\
+w_2\\
+w_3
+\end{pmatrix}
+=
+\begin{pmatrix}
+I_0\\
+I_1\\
+I_2
+\end{pmatrix}
+\end{equation}
+where $I_n$ is defined as
+\begin{equation}
+I_n=\int_a^bp_n(x)\dx 
+\end{equation}
+
+Multiplying on the left by the inverse of the matrix of polynomials will give a solution
+for the vector of weights. In this three point example, it ensures that the abscissas
+and weights provided will exactly reproduce integrals of polynomials of order two or less. 
+
+In this example, polynomials only up to order two were used, that is, only quadratic
+polynomials, which is expected to be the best achievable from a three point formula. In
+order to exactly calculate all polynomials of order two or less, it is necessary in 
+the three point example that the other two polynomials chosen to construct 
+
+\section{Quadrature Formulae with Optimized Abscissas and Weights}
+
+In the last section it was shown that by simple matrix manipulation, the $n$ weights
+required to exactly integrate an $n$ point quadrature provided the function being
+integrated could be represented by a polynomial of order $n-1$. However, it is possible
+to improve on this by an appropriate choice of abscissas. 
+
+The only requirement on the choice of abscissas for the DVR method is that the 
+end points be included in the abscissas. If there are no other requirements on the 
+points, such as a specific distribution pattern, this extra freedom can be employed
+to increase the accuracy of the quadrature formula. For many Gauss-type quadratures, this
+will allow integrals of up to $2n-1$ order to be calculated exactly. This accuracty
+cannot be achieved with Lobatto's Integration formula (see appendix \ref{lobatappend})
+because two of the abscissas are fixed. But, it is possible to achieve exact integration
+of a $2n-3$ order polynomial with
+Lobatto's Integration formula \cite{ABRW-STGN} with 
+the integration defined as,
+\begin{equation}
+\label{lobatint}
+\int_{-1}^1f(x)\dx=\frac{2}{n(n-1)}\left(f(1)+f(-1)\right)+\sum_{i=2}^{n-1}f(x_i)w_i
+\end{equation}
+It is noteworthy that many authors
+refer to the Lagrange interpolating polynomials defined in eqn. \ref{lipdef} as Lobatto
+Shape Functions or some varient thereof. \cite{Manolop_Wyatt_1988}
+The abscissas for this quadrature are the roots of the first derivative
+of the Legendre polynomial of order $n-1$, $P_{n-1}^\prime(x)$. The weights are
+given by the relation
+\begin{equation}
+\label{lobatW}
+w_i=\frac{2}{n(n-1)(P_{n-1}(x_i))^2}
+\end{equation}
+where $P_{n-1}$ is the Legendre polynomial of order $n-1$ \cite{ABRW-STGN}. 
+
+Using this distribution of abscissas and their corresponding weights allows for
+a quadrature formula that provides exact integration of all polynomials order $2n-1$
+or less with the same number of points. Furthermore, by inclusion of the end points, 
+it is also suitable for use in the DVR method, which requires the endpoints to be included
+in the quadrature formulae to ensure continuity of the integrands. 
+
+\section{Linking Multiple Quadratures and Scaling}
+\subsection{Defining Lagrange Interpolating Polynomials over Multiple Regions}
+The vast majority of the time the desired integral is not over a domain of -1 to 1, but
+by simple change of variable the integral can be rewritten as
+\begin{equation}
+\label{scaleint}
+\int_{-1}^{1}f(x)\dx = \frac{2}{b-a}\int_a^bf(y)\dy
+\end{equation}
+Where we make the replacement
+\begin{equation}
+\label{scalex}
+y = \left(\frac{b-a}{2}\right)x+\left(\frac{b+a}{2}\right)
+\end{equation}
+By use of equation \ref{scalex} the abscissa values can be recast over any range. 
+This gives the ability to repleatedly apply the quadrature formula of equation 
+\ref{lobatint} over a large region, thus splitting it into ``elements''. The 
+element boundaries can be feely chosen, even if the the dispersion of points within
+the elements are not. Thus, the density of points in the integration can easily 
+be manipulated, and more points can be placed in regions where the integrand is 
+more interesting. 
+
+Linking multiple quadratures together is desireable and often necessary to avoid
+using high order polynomials. 
+High order polynomial interpolations can cause ringing
+between points, thus not well representing the function. Forcing the polynomial
+to pass through each function point exactly can cause the polynomial interpolation
+to oscillate to extreme values in order to satisfy the constraints. To avoid this, 
+lower order polynomials are used to interpolate sets of points within each element, 
+and the integration is then performed for each element. 
+The LIP functions used in each 
+element can be defined to be zero outside of their element, 
+\begin{equation}
+\label{lipdomain}
+\lambda_{\xi,i}(x)=\left\{\begin{array}
+    {r@{\quad:\quad}l}
+    \lambda_{\xi,i}(x) & x_{\xi,1} < x < x_{\xi,n_\xi} \\
+    0 & x < x_{\xi,1}, x> x_{\xi,n_\xi}
+    \end{array} \right.
+\end{equation}
+where $\xi$ labels the element, $i$ labels the $i^{th}$ function in that
+element, and $n_\xi$ labels how many functions, and points, are defined within
+that element. 
+
+The definition of equation \ref{lipdomain} ensures that 
+that the whole set of LIP functions for all elements are orthogonal.
+Furthermore, by splitting the integration range into elements, 
+the DVR matrices are much more simple than they would be if one
+set of polynomials was used to interpolate the entire region, as will be 
+seen in later sections.  
+
+Linking multiple elements together results from dividing the integration
+region into elements and applying the Lobatto integration formula in each 
+element such that the full integral is performed by a summation of quadratures. 
+\begin{align}
+\label{lobatsplit}
+\int_a^zf(x)\dx & = \int_a^bf(x)\dx+\int_b^cf(x)\dx+\dots+\int_y^zf(x)\dx \\
+\label{lobatint1}
+&=\sum_{\xi=a}^{z}\left[\frac{2}{n_\xi(n_\xi-1)}\left(f(x_{\xi,1})+
+f(x_{\xi,n_\xi})\right) +\sum_{i=2}^{n_\xi-1}f(x_{\xi,i})w_{\xi,i}\right]
+\end{align}
+From this formula the integration can be performed over any number of elements,
+each consisting of a small enough number of points to avoid ringing effects, 
+while still maintaining a high level of accuracy. And, as mentioned previously, 
+allows for the freedom to distribute points and elements to maximize their
+effectiveness. One is not forced to conform to the distribution of quadrature 
+abscissas over the entire integral. 
+
+\subsection{Continuity of the Wavefunction}
+There is a further complication that must be addressed before this basis
+set of LIP functions can be used in a basis expansion of the wavefunction: 
+the issue of continuity. 
+At each element boundary, there are two LIP functions that have a value of 1
+at the boundary edge. For the boundary between element $\xi$ and $\xi+1$ these
+are the last LIP function in set $\xi$ and the first in set $\xi+1$. This 
+is shown in figure \ref{bridgechi} using the example six-point functions
+defined earlier. 
+
+\begin{figure}[t]
+\includegraphics{bridge6.eps}
+\caption {This plot is an example of a ``bridging'' function between two elements. 
+From -2 to 0 is the plot of the last function of one element, and from 0 to 2 is
+the first function of the next element. Combining them into one basis gives a
+single function, still orthogonal to all of the rest with respect to the quadrature,
+and ensures continuity at the element boundaries. }
+\label{bridgechi}
+\end{figure}
+
+Discontinuity is not a problem when integrating a function whose value is known at 
+this point -- both functions are multiplyed by the value $f(x=x_{n_\xi})$. 
+However, when using these functions as a basis set expansion, the coefficients
+are not known ahead of time. This means there is no assurance that these two
+functions will have the same coefficient, and thus, no assurance that the 
+wavefunction will be continuous. 
+
+Following Rescigno and McCurdy \cite{FEMDVR2000}, the simple solution to this
+is to combine these two functions, the last of each element with the first
+of the next element, into one basis function. We can therefore cast a new basis
+set, defined as
+\begin{align}
+\label{chibasistmp}
+\chi_{\xi,n_\xi}(x)&=\frac{1}{2}\left[\lambda_{\xi,n_\xi}(x)+\lambda_{\xi+1,1}(x)\right] \\
+\chi_{\xi,i}(x)&=\lambda_{\xi,i}(x), \qquad i=2,n_\xi-1
+\end{align}
+where for undefined or non-existing elements the LIP function is assumed to be zero. 
+
+Here we have made a different definition than Rescigno and McCurdy in that 
+the ``bridging'' function between the elements is the sum of the two functions
+{\it dividied by two}. This ensures that the basis function value at this point
+remains 1. While the functions are still orthogonal and not normalized, this is 
+only a point made for consistancy with the other functions.  This also reduces
+the total number of basis functions by $M-1$, where $M$ is the number of 
+elements. 
+
+\subsection{Basis Function Normalization}
+To be used for DVR matrices, the basis functions must be normalized with 
+respect to the quadrature. The functions defined in equations \ref{liportho}
+and \ref{chibasistmp} are orthonormal with respect to a weight function of 1. 
+However, because the functions are integrated with quadrature weights not 
+equal to one, it is necessary to redefine the $\chi$ functions of equation 
+\ref{chibasistmp} as
+\begin{align}
+\label{chibasis}
+\chi_{\xi,n_\xi}(x)&=\frac{1}{2}\left[\lambda_{\xi,n_\xi}(x)w_{\xi,n_\xi}^{-1/2}+\lambda_{\xi+1,1}(x)w_{\xi,1}^{-1/2}\right] \\
+\chi_{\xi,i}(x)&=\lambda_{\xi,i}(x)w_i^{-1/2}, \qquad i=2,n_\xi-1
+\end{align}
+
+With this definition, the quadrature integration of the $\chi$ functions obeys the
+orthonormality relation, 
+\begin{equation}
+\label{chiortho}
+\sum_{\xi=1}^N\sum_{i=1}^{n_\xi}\chi_{\alpha,j}(x_{\xi,i})\chi_{\beta,k}(x_{\xi,i})w_{\xi,i}
+=\delta_{\alpha,\beta}\delta_{j,k}
+\end{equation}
+where $N$ is the number of elements. 
+
+
+\section{Construction of DVR Matricies in One Dimension}
+\subsection{Standard DVR Review}
+The benefit of using the Discrete Variable Representation is that many of the
+integrals that are normally involved in using a basis expansion never need to be
+calculated. Much more information on the theory of the DVR method is available in
+literature\cite{DVR1986,DVR1990}. In short, the idea is to use a transformation on the 
+potential matrix of the Hamiltonian such that the potential matrix is diagonal with
+each diagonal element represented by the value of the potential at a quadrature 
+point. 
+The standard method to construct the potential matrix in some given basis 
+is to compute each matrix element using quadrature integration, as
+\begin{equation}
+\label{Vmatel}
+V_{\alpha,\beta}=\sum_{i=1}^{M}\phi_{\alpha}(x_{i})w_i^{1/2}V(x_{i})\phi_{\beta}(x_{i})w_{i}^{1/2}
+\end{equation}
+By inspection, the terms $\phi_\alpha(x_i)w_i^{1/2}$ can be written as matricies with elements
+labed by $\alpha$ and $i$, and these matrices diagonalize the potential matrix. 
+\begin{equation}
+\label{Vdiag}
+{\bf V}={\bf D} {\bf V_d} {\bf D^T}
+\end{equation}
+where
+\begin{equation}
+\label{Vdiagdef}
+{\bf V_d}=
+\begin{pmatrix}
+V(x_1) & 0 & \dots & 0 \\
+0 & V(x_2) & \dots & 0 \\
+0 & 0 &\ddots & \vdots \\
+0 & 0 & \dots & V(x_M) 
+\end{pmatrix}
+\end{equation}
+
+The transformation matrix, which is the DVR matrix, ${\bf D}$, is a matrix
+of the basis functions evaluated at the quadrature points and multiplied by the 
+square root of the weight associated with that point. 
+\begin{equation}
+\label{Dmatrix}
+{\bf D}=
+\begin{pmatrix}
+\phi_1(x_1)w_1^{1/2} & \phi_1(x_2)w_2^{1/2} & \phi_1(x_3)w_3^{1/2} & \dots & \phi_1(x_M)w_M^{1/2} \\
+\phi_2(x_1)w_1^{1/2} & \phi_2(x_2)w_2^{1/2} & \phi_2(x_3)w_3^{1/2} & \dots & \phi_2(x_M)w_M^{1/2} \\
+\vdots & \vdots  & \vdots & \ddots & \vdots \\
+\phi_M(x_1)w_1^{1/2} & \phi_M(x_2)w_2^{1/2} & \phi_M(x_3)w_3^{1/2} & \dots & \phi_M(x_M)w_M^{1/2} \\
+\end{pmatrix}
+\end{equation}
+
+From orthonormalization it is clear that ${\bf DD^T} = {\bf 1}$, the unit matrix. From use
+of the Cristoffel-Darboux Identity\cite{CD3T}, and the fact that ${\bf D}$ is a unitary matrix, 
+it is also true that ${\bf D^TD}={\bf 1}$. 
+
+\subsection{DVR Matrix with Finite Element Basis}
+If only a single element is used for the entire integration range, then employing the 
+Lagrange Interpolating Polynomials in the DVR is as simple as replacing the general $\phi$
+functions in equation \ref{Dmatrix} with the $\chi$ functions defined in equation \ref{chibasis}.
+For multiple elements, some care must be taken because of the ``bridging'' functions. 
+If one were to use the LIP basis without the bridging functions and simply use the full 
+basis of all the polynomials from each element, then the DVR matrix would be block-diagonal;
+each block of the DVR matrix would correspond to a finite element, and 
+the definition of equation \ref{lipdomain} would ensure no 
+coupling between different blocks. 
+
+However, with the necessary bridging functions, the DVR matrix blocks share the diagonal, corner
+matrix elements of each block with the blocks before and after it. 
+A two-element FEM-DVR matrix, each finite element with 4 points would have the following form
+\begin{equation}
+\label{dvrxmpl} 
+{\bf D} = 
+\begin{pmatrix} 
+\phi_1(x_1)w^{1/2}_1 & \phi_1(x_2)w^{1/2}_2 & \phi_1(x_3)w^{1/2}_3 & \phi_1(x_4)w^{1/2}_4 & 0 & 0 & 0 \\
+\phi_2(x_1)w^{1/2}_1 & \phi_2(x_2)w^{1/2}_2 & \phi_2(x_3)w^{1/2}_3 & \phi_2(x_4)w^{1/2}_4 & 0 & 0 & 0 \\
+\phi_3(x_1)w^{1/2}_1 & \phi_3(x_2)w^{1/2}_2 & \phi_3(x_3)w^{1/2}_3 & \phi_3(x_4)w^{1/2}_4 & 0 & 0 & 0 \\
+\phi_4(x_1)w^{1/2}_1 & \phi_4(x_2)w^{1/2}_2 & \phi_4(x_3)w^{1/2}_3 & \phi_4(x_4)w^{1/2}_4 & \phi_4(x_5)w^{1/2}_5 & \phi_4(x_6)w^{1/2}_6 & \phi_4(x_7)w^{1/2}_7 \\
+0 & 0 & 0 & \phi_5(x_4)w^{1/2}_4 & \phi_5(x_5)w^{1/2}_5 & \phi_5(x_6)w^{1/2}_6 & \phi_5(x_7)w^{1/2}_7 \\
+0 & 0 & 0 & \phi_6(x_4)w^{1/2}_4 & \phi_6(x_5)w^{1/2}_5 & \phi_6(x_6)w^{1/2}_6 & \phi_6(x_7)w^{1/2}_7 \\
+0 & 0 & 0 & \phi_7(x_4)w^{1/2}_4 & \phi_7(x_5)w^{1/2}_5 & \phi_7(x_6)w^{1/2}_6 & \phi_7(x_7)w^{1/2}_7 \\
+\end{pmatrix}
+\end{equation}
+
+For two elements with four points in each, and thus sharing the point at the boundary 
+separating the elements, gives a $7\times7$ matrix. Here the functions have been indexed
+directly rather than specifying another index for the element. Function $4$ in equation 
+\ref{dvrxmpl} is the bridging function between the elements. 
+This form for the DVR matrix shows the ``linked-diagonal-block'' form of the matrix, 
+which again is a result of the bridging function ensuring continuity. 
+
+\appendix
+\section{Proof of Lobatto Integration Formula}
+\label{lobatappend}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{General Quadrature Proof}
+\label{genproof}
+A Gaussian-type quadrature formula for approximating an integral is based off of
+a set of polynomials that are orthogonal with respect to a weighting function over
+the range of integration. For the Legendre polynomials, the range of integration is 
+$[-1,1]$ and the weight function is 1. 
+
+For any given set of $n$ quadrature abscissas,$\{x\}_n$, weights can be calculated to make
+the following summation exact, 
+\begin{equation}
+\intunit f(x)\dx = \sum_{i=1}^nw_if(x_i)
+\end{equation}
+for all $f$ if $f$ is a polynomial of order $n-1$ or less. An improvement can be made
+by specifying a set of abscissas. In the example of Legendre polynomials (and this holds
+true for other orthogonal polynomials and their related quadrature formulas), the set
+of points is chosen to be the roots of the $P_n(x)$ Legendre polynomial. Using these
+abscissas and then calculating the weights ensures a quadrature that will exactly 
+integrate any polynomial of order $2n-1$. This can be shown as follows
+\cite{Burden_gaussquad}, 
+
+Say $g(x)$ is a polynomial of order no greater than $2n-1$. This polynomial can be
+written as 
+\begin{equation}
+\label{genproof1}
+g(x)=q(x)P_n(x)+r(x)
+\end{equation}
+where $q(x)$ is the dividend after dividing $g(x)$ by $P_n(x)$, and $r(x)$ is the 
+remainder. If $g(x)$ is of order $2n-1$ or less, then both $q(x)$ and $r(x)$ cannot
+be of order greater than $n-1$. As such, both $q(x)$ and $r(x)$ can be represented
+as a linear combination of the set of Legendre polynomials of order $n-1$ and less. 
+Integrating equation \ref{genproof1} gives, 
+\begin{align}
+\label{genproof2}
+\intunit g(x)\dx &= \intunit q(x)P_n(x)\dx + \intunit r(x)\dx \\
+\intunit g(x)\dx &= 0+\intunit r(x)\dx
+\end{align}
+where the first term on the right-hand side is necessarily zero because if $q(x)$ 
+can be represented by an expansion in Legendre polynomials of orders less then $n$, 
+then each of these polynomials are orthogonal to $P_n(x)$ with respect to integration.
+Therefore, all that is left is the integration over the remainder term. 
+In performing the same steps by quadrature, 
+\begin{align}
+\label{genproof3}
+\sumunit g(x_i)w_i &= \sumunit q(x_i)P_n(x_i)w_i + \sumunit r(x_i)w_i \\
+\sumunit g(x_i)w_i &= 0+\sumunit r(x_i)w_i
+\end{align}
+where again the first summation on the right-hand side is zero because the 
+abscissa points were chosen to be the roots of $P_n(x)$. Because $r(x)$ is of
+order $n-1$ or less, this term can be integrated exactly by quadrature, and thus
+$g(x)$ is integrated exactly. Thus for any polynomial $g(x)$ of order $2n-1$, 
+the $n$ point quadrature can be made to be exact, giving
+\begin{equation}
+\intunit g(x)\dx = \sumunit g(x_i)w_i
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Lobatto Quadrature Proof}
+\label{lobattoproof}
+The Lobatto integration formula is 
+\begin{equation}
+\label{lobatint_proof}
+\intunit f(x) \approx \frac{2}{n(n-1)}\left[f(-1)+f(1)\right]+\sum_{i=2}^{n-1}w_if(x_i)
+\end{equation}
+where the abscissas, $x_i$ are the $i^{th}$ root of $P_{n-1}^\prime(x)$, $P_n(x)$ being the 
+$n^{th}$ Legendre polynomial, and the interior weights, $w_i$ are given by the formula
+\begin{equation}
+\label{weightform}
+w_i=\frac{2}{n(n-1)[P_{n-1}(x)]^2}
+\end{equation}
+This integration quadrature is exact for all functions $f(x)$ such that $f(x)$ is a
+polynomial of order $2n-3$ or less. The proof of this relies on the Legendre Polynomial
+recursion relation \cite{LegendrePoly},
+\begin{equation}
+\label{P3term}
+(n+1)P_{n+1}(x)=(2n+1)xP_n(x)-nP_{n-1}(x) 
+\end{equation}
+and the Legendre polynomial derivative formula \cite{LegendrePoly}
+\begin{align}
+\label{P3der}
+(1-x^2)P^\prime_{n}(x) &= -nxP_n(x)+nP_{n-1}(x) \\
+  {}  &=(n+1)\left[xP_n(x)-P_{n+1}(x)\right]
+\end{align}
+The main difference between the Lobatto Quadrature formula and other Gaussian-type
+quadratures is that the end points of the integration range ($[-1,1]$, generally) are
+included as quadrature points. By including these points explicitly, two degrees 
+of freedom are lost, and thus the quadrature is not as accurate as the general case. 
+
+By including the end points, the abscissas for Lobatto quadrature are the roots
+of the equation
+\begin{equation}
+\label{Phidef1}
+\Phi_n(x)=(1-x^2)P_{n-1}^\prime(x)
+\end{equation}
+That these abscissas are those that provide the maximum accuracy is proven 
+in a subsequent section. 
+
+The function $\Phi_n(x)$ is a polynomial of order $n$ and has roots at $x=-1,1$. 
+From the relations given in equations \ref{P3term} and \ref{P3der}, equation \ref{Phidef1}
+can be rewritten, 
+\begin{align}
+\label{Phidef2}
+\Phi_n(x)&=(1-x^2)P_{n-1}^\prime(x) \nonumber \\
+&=(n-1)P_{n-2}(x)-(n-1)xP_{n-1}(x) \nonumber \\
+&=(n-1)P_{n-2}(x)-\frac{n-1}{2n-1}\left(nP_n(x)+(n-1)P_{n-2}(x)\right) \nonumber \\
+&=\frac{n(n-1)}{2n-1}\left(P_{n-2}(x)-P_n(x)\right)
+\end{align}
+From here the proof proceeds in the same way as in the general case. 
+Given a polynomial, $g(x)$ that is of order $2n-3$ or less, it can be written 
+similarly to equation \ref{genproof1}, but now we use the $\Phi$ function instead of 
+a Legendre Polynomial as the divisor, 
+\begin{align}
+\label{gproof1}
+g(x)&=q(x)\Phi_n(x)+r(x) \nonumber \\
+g(x)&=q(x)\frac{n(n-1)}{2n-1}\left(P_{n-2}(x)-P_n(x)\right) +r(x) 
+\end{align}
+If $g(x)$ is of order $2n-3$ or less, then $q(x)$ is of order $n-3$ or less. The remainder
+$r(x)$ is of order $n-1$ or less, as the highest order possible of the remainder is always one
+less than then divisor. Preceding as before by integrating both sides gives
+\begin{equation}
+\label{gproof2}
+\intunit g(x)\dx = \intunit q(x)\frac{n(n-1)}{2n-1}\left(P_{n-2}(x)-P_n(x)\right)\dx + \intunit r(x)\dx 
+\end{equation}
+In general, the first term on the right-hand side is only zero if $q(x)$ can be 
+expanded in Legendre Polynomials of order $n-3$ or less, due to the presence of the
+$P_{n-2}(x)$ polynomial. It is possible that $q(x)$ have order $n-1$, but only if 
+$q(x)$ and $P_{n-2}(x)$ remain orthogonal, and this is generally not the case. 
+After integration, we again have the condition
+\begin{equation}
+\label{gproof3}
+\intunit g(x)\dx = \intunit r(x)\dx 
+\end{equation}
+
+Performing the Lobatto quadrature on equation \ref{gproof1} behaves similarly to the
+general quadrature case. 
+\begin{align}
+\label{gproof4}
+\sumunit g(x_i)w_i &= \sumunit q(x_i)w_i\frac{n(n-1)}{2n-1}\left(P_{n-2}(x_i)-P_n(x_i)\right) + \sumunit r(x_i)w_i \nonumber \\
+\sumunit g(x_i)w_i &= 0 + \sumunit r(x_i)w_i
+\end{align}
+where again the first term on the right-hand side is zero because the quadrature
+abscissas were chosen to be roots of $\Phi(x)$ (as defined in equation \ref{Phidef2}). 
+
+Therefore it is proved that the $n$-point Lobatto Quadrature is exact for all 
+polynomials of order $2n-3$. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Proof of Weight Formula for Lobatto Quadrature}
+Because the Lobatto integration formula exactly integrates any polynomial of order
+$2n-3$ or less, integrating a Lagrange interpolating polynomial can be done by 
+quadrature exactly. A Lagrange interpolating polynomial is defined in equation 
+\ref{lipdef} and rewritten here for convenience, 
+\begin{equation}
+\lambda_k(x)=\prod_{j \ne k}^n\frac{(x-x_j)}{(x_k-x_j)} \nonumber
+\end{equation}
+where $\lambda_k(x_k)=1$ by definition and is zero at all other quadrature abscissas. 
+Integrating this function produces the quadrature result, 
+\begin{align}
+\label{lipint1}
+\intunit \lambda_k(x)\dx &= \sumunit \lambda_k(x_i)w_i \nonumber \\
+&= w_k\lambda_k(x_k) = w_k
+\end{align}
+Therefore a formula for the integration of $\lambda_k(x)$ will result in 
+an expression for the weight factors. 
+
+The Lagrange interpolating polynomial can also be written in another form
+based on the Legendre Polynomials. Since the $\lambda_k(x)$ functions share
+all the same roots as the expression $(1-x*2)P^\prime_{n-1}(x)$ except for
+the $k^{th}$ root, $\lambda_k(x)$ can be defined as
+\begin{equation}
+\lambda_k(x)=Q\frac{(1-x^2)P^\prime_{n-1}(x)}{(x-x_k)}
+\end{equation}
+where $Q$ is a normalizing factor that ensures $\lambda_k(x_k)=1$. 
+The normalization factor $Q$ can be calculated by use of l'Hopital's rule
+applied to $\lambda_k(x)$ or more simply by the identity \cite{Dahlquist_gaussquad}
+\begin{equation}
+\label{lipdef2}
+\lambda_k(x)=\frac{\Phi(x)}{(x-x_k)\Phi^\prime(x_k)}
+\end{equation}
+where $\Phi(x)=(1-x^2)P_{n-1}^\prime(x)$ and is also defined in equations \ref{Phidef1}
+and \ref{Phidef2}. Equation \ref{lipdef2} is easy to prove given that all terms in 
+$\Phi^\prime(x)$ that contain the $(x-x_k)$ factor after differentiation are zero when
+$\Phi^\prime(x)$ is evaluated at $x=x_k$. 
+The result is that with normalizing, 
+\begin{equation}
+\label{lipdef3}
+\lambda_k(x)=\frac{(1-x^2)P^\prime_{n-1}(x)}{(x-x_k)(1-x_k^2)P^{\prime\prime}(x_k)}
+\end{equation}
+
+It is now left to prove that integrating this expression for $\lambda_k(x)$ gives
+the weight formula defined in equation \ref{weightform}
+\begin{align}
+\intunit \lambda_k(x)\dx & = \intunit \frac{(1-x^2)P^\prime_{n-1}(x)}{(x-x_k)(1-x_k^2)P_{n-1}^{\prime\prime}(x_k)} \nonumber \\
+ & = \frac{1}{(1-x_k^2)P^{\prime\prime}_{n-1}(x_k)} \intunit \frac{(1-x^2)P^\prime_{n-1}(x)}{(x-x_k)} \nonumber \\
+\label{wform1}
+ & = \frac{2}{n(n-1)[P_{n-1}(x_k)]^2} \\
+\label{wform2}
+ & = \frac{2n}{(1-x_k^2)P^{\prime\prime}_{n-1}(x_k)P^\prime_n(x_k)} 
+\end{align}
+Where the forms for the weights in equations \ref{wform1}  and \ref{wform2} are given in references
+\cite{ABRW-STGN} and \cite{LobattoQuad} respectively. 
+From equation \ref{wform2} we can see the proof of the weights reduces to proving the equality
+\begin{equation}
+\label{weightint}
+\intunit \frac{(1-x^2)P^\prime_{n-1}(x)}{(x-x_k)}\dx = \frac{2n}{P^\prime_n(x_k)}
+\end{equation}
+
+From here we shall prove that the interior abscissas are indeed the roots of $P_{n-1}^\prime(x)$
+and show how to perform the integral in equation \ref{weightint} to get the formulae for 
+the associated weights.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Abscissas}
+As noted before, the interior weights can be calculated from the solution
+to the integral
+\begin{equation}
+\intunit \lambda_i(x)\dx = w_i
+\end{equation}
+where $\lambda_i(x)$ is the Lagrange interpolating polynomial defined by the 
+chosen abscissas. For the Lobatto quadrature, the interior abscissas are defined
+to be the roots of $P^\prime_{n-1}(x)$, where $P_n(x)$ is the $n^{th}$ Legendre 
+polynomial and $n$ is the total number of quadrature points (including the end points). 
+
+This section proves that the best possible abscissas are the roots of $P^\prime_{n-1}(x)$
+and proves the formula, equation \ref{weightform}, for the weights. 
+
+First let us presume that we do not know the interior abscissas, but that the
+end point abscissas have been forced. Earlier in equation \ref{Phidef1}, $\Phi$
+was defined as the polynomial with roots at all of the abscissas. Now let us 
+redefine this function as one in which the interior abscissas are unknown, 
+\begin{equation}
+\label{Phiudef}
+\Phi_n(x)=(1-x^2)\phi_{n-2}(x)
+\end{equation}
+where $\phi_{n-2}(x)$ is some unknown function with $n-2$ real, distinct roots
+in the range of $[-1,1]$. Here we will follow the formulation of Hildebrand 
+\cite{Hildebrand}, chapters 7-8, on quadratures with assigned abscissas. 
+By the methods of section \ref{genproof} we know that maximum accuracy of the 
+quadrature is obtained by using the roots of an orthogonal polynomial. We 
+therefore make the assertation that $\phi_{n-2}$ is the $(n-2)^{th}$ member of
+a set of orthogonal polynomials that are orthogonal with respect to the 
+weighting function $\wbar \equiv (1-x^2)$. Based on this assertation, we must
+ensure that $\phi_{n-2}$ is orthogonal to all polynomials of degree $n-3$ or less. 
+For simplicity in notation, from here on we will set $r=n-2$. 
+Thus, 
+\begin{equation}
+\label{phiortho}
+\intunit \wbar(x)\phi_r(x)g_{r-1}(x)\dx=0
+\end{equation}
+where $g_{r-1}(x)$ is any general polynomial of degree $r-1$ or less. 
+Following section 7.5 of Hildebrand\cite{Hildebrand}, we proceed to reform
+equation \ref{phiortho} through successive integration-by-parts. In doing
+so we require the $r^{th}$ integral of $\wbar(x)\phi_r(x)$, and so we define
+this to be the $r^{th}$ derivative of a function $U_r(x)$, 
+\begin{equation}
+\label{Udef}
+\wbar(x)\phi_r(x)=\frac{d^rU_r(x)}{dx^r} = U^{(r)}_r(x)
+\end{equation}
+and from this equation \ref{phiortho} is now
+\begin{equation}
+\label{Uortho}
+\intunit U^{(r)}_r(x)g_{r-1}(x)\dx = 0
+\end{equation}
+After $r$ derivatives, the $g_{r-1}(x)$ function is zero and the integral term
+vanishes. What is left is $r-1$ surface terms given as
+\begin{align}
+\label{Usurface}
+\left\{ U_r^{(r-1)}(x)g_{r-1}^{(1)}(x)\right. &- U_r^{(r-2)}(x)g_{r-1}^{(2)}(x) + U_r^{(r-3)}(x)g_{r-1}^{(3)}(x) + \dots \nonumber \\
+ \dots &+ \left. \left. (-1)^{r-1}U_r(x)g_{r-1}^{(r-1)}(x)\right\} \right|_{-1}^{+1}  = 0
+\end{align}
+That the sum of the surface terms is zero is necessary to ensure that the integral
+in equation \ref{Uortho} is  zero. Because $g_{r-1}(x)$ can be {\it any} 
+polynomial of degree $r-1$ or less, there are no constraints on its value at 
+$x=\pm1$. Therefore, we have the constraint on $U_r(x)$ that 
+\begin{equation}
+\label{Uend}
+U_r^{(r-k)}(-1)=U_r^{(r-k)}(1)=0, \quad\quad k=1,2,\dots,r
+\end{equation}
+
+Furthermore, we have the requirement that if $\phi_r(x)$ is a polynomial of
+degree $r$, its $(r+1)^{th}$ derivative must vanish. From this requirement 
+and equation \ref{Udef}, $U_r(x)$ must be a solution to the differential equation
+\begin{equation}
+\label{Udifeq}
+\frac{d^{r+1}}{dx^{r+1}}\left[\frac{1}{\wbar(x)}\frac{d^rU_r(x)}{dx^r}\right]=
+\frac{d^{r+1}}{dx^{r+1}}\left[\frac{1}{(1-x^2)}\frac{d^rU_r(x)}{dx^r}\right]=0
+\end{equation}
+where $U_r(x)$ must satisfy the conditions of equation \ref{Uend}. 
+
+From looking at equation \ref{Udifeq}, we can see that the $1/(1-x^2)$ term may
+be problematic; no number of successive derivatives cause this term to vanish. 
+Therefore, this term must be cancled from the $U_r^{(r)}(x)$ term. Still requiring 
+that equation \ref{Udifeq} be zero then allows $U_r(x)$ to be a polynomial of order
+$2r+2$. The requirement of equation \ref{Usurface} leads us to try a function for $U_r(x)$
+of the form
+\begin{equation}
+\label{U1}
+U_r(x)=C_{r,1}\frac{d^2}{dx^2}(x^2-1)^{r+2}-C_{r,2}(x^2-1)^r
+\end{equation}
+Where $C_{r,1}$ and $C_{r,2}$ is a constant coefficient. 
+Clearly this function has an order of $2r+2$, and though it may seem strange to chose 
+this function, the reasons will be made clear shortly. We are free to choose these
+coefficients provided that the roots of $\phi_r$ remain the same and the requirement
+of equation \ref{Usurface} is maintained. The use of the $(x^2-1)$ terms ensure that 
+the conditions of equation \ref{Usurface} are met; each term in the first $r$ derivatives
+of this definition of $U_r(x)$ contain at least on $(x^2-1)$ term and are thus zero at
+$x=\pm1$.  After $r$ applications of the derivative operator with respect to $x$ and
+division by $\wbar(x)$, 
+$U_r^{(r)}(x)$ is a polynomial of order $r=n-2$, and thus also satisfies the condition 
+of equation \ref{Udifeq}, which is to say the $(r+1)^{th}$ derivative of this polynomial
+is zero. Hence, all conditions on the form of $U_r(x)$ are met. 
+
+In order to find $\phi_r(x)$, we must work out the explicit form of $U_r^{(r)}(x)$. 
+We first apply the derivative operators, and since the conditions from the surface terms
+are met, those of equation \ref{Usurface}, by the $(x^2-1)$ terms, we are free to 
+manipulate the coefficients later. Applying $d^r/dx^r$ to equation \ref{U1}, we have
+\begin{equation}
+\label{U2}
+\frac{d^r}{dx^r}U_r(x)=C_{r,1}\frac{d^{r+2}}{dx^{r+2}}(x^2-1)^{r+2}-C_{r,2}\frac{d^r}{dx^r}(x^2-1)^r
+\end{equation}
+Observing that there is a similarity in this terms to the Rodrigues formula for the 
+Legendre polynomials, defined as
+\begin{equation}
+\label{RodriguesLegendre}
+P_l(x)=\frac{1}{2^ll!}\frac{d^l}{dx^l}(x^2-1)^l
+\end{equation}
+We can simplify this equation by the choice of the coefficients to be
+\begin{align}
+\label{Crcoef1}
+C_{r,1}&=-C\frac{(r+1)(r+2)}{2r+1}\frac{1}{2^{r+2}(r+2)!} \\
+\label{Crcoef2}
+C_{r,2}&=C\frac{(r+1)(r+2)}{2r+1}\frac{1}{2^{r}r!} 
+\end{align}
+and rewrite equation \ref{U2} as
+\begin{align}
+\frac{d^r}{dx^r}U_r(x) &= -C\frac{(r+1)(r+2)}{2r+1}\left[ \frac{1}{2^{r+2}(r+2)!}\frac{d^{r+2}}{dx^{r+2}}(x^2-1)^{r+2}-\frac{1}{2^rr!}\frac{d^r}{dx^r}(x^2-1)^r\right] \\
+\frac{d^r}{dx^r}U_r(x)&=-C \frac{(r+1)(r+2)}{2r+1}\left[ P_{r+2}(x)-P_r(x) \right] 
+\end{align}
+again with $r=n-2$, then we have the following algebraic sequence, 
+\begin{align}
+\frac{d^r}{dx^r}U_r(x) &= -\frac{C(r+1)(r+2)}{2r+1}\left[ P_{r+2}(x)-P_r(x) \right]  \\
+\frac{d^{n-2}}{dx^{n-2}}U_{n-2}(x) &= -\frac{Cn(n-1)}{2n-1}\left[ P_{n}(x)-P_{n-2}(x) \right]  \\
+ &= C\frac{-n^2+n}{2n-1}\left[ P_{n}(x)-P_{n-2}(x) \right]  \\
+ &= C\frac{n^2-n(2n-1)}{2n-1}P_{n}(x)-\frac{n(n-1)}{2n-1}P_{n-2}(x)   \\
+\label{ptmp1}
+ &= C\frac{n^2}{2n-1}P_n(x)-nP_{n}(x)-\frac{n(n-1)}{2n-1}P_{n-2}(x)   \\
+\label{ptmp2}
+ &= C\left(nxP_{n-1}(x)-nP_{n}(x)\right)\\
+\label{ptmp3}
+ &=C(1-x^2)P_{n-1}^\prime(x)
+\end{align}
+where the step between lines \ref{ptmp1} and \ref{ptmp2} utilizes the three-term
+recurrance relationship of 
+\begin{equation}
+nxP_{n-1}(x)=\frac{n^2}{2n-1}P_n(x)+\frac{n(n-1)}{2n-1}P_{n-2}(x)
+\end{equation}
+and between lines \ref{ptmp2} and \ref{ptmp3} the Legendre derivative 
+equation is used, 
+\begin{equation}
+(1-x^2)P_{n-1}^\prime(x)=nxP_{n-1}(x)+nP_{n}(x)
+\end{equation}
+
+Placing $U_r^{(r)}(x)=C(1-x^2)P_{r+1}^\prime(x)=(1-x^2)P_{n-1}^\prime(x)$ into 
+equation \ref{Udifeq} gives
+\begin{equation}
+\frac{d^{n-1}}{dx^{n-1}}\left[ \frac{1}{(1-x^2)}C(1-x^2)P_{n-1}^\prime(x) \right]=0
+\end{equation}
+which is true, being that $P_{n-1}^\prime(x)$ is a polynomial of order $n-2$, 
+the $(n-1)^{th}$ derivative of it must vanish. Therefore, the polynomial that
+we are seeking, $\phi_{n-2}(x)$, is equal or proportional to $P_{n-1}^\prime(x)$. 
+The coefficient $C$ is determined such that the lowest order
+polynomial of this set, $\phi_0(x)=CP_1^\prime(x)=1$ which give $C=1$. 
+Therefore, $\phi_{n-2}(x)=P_{n-1}^\prime(x)$, and  is a member of a set that are 
+orthogonal with respect to the weighting function $(1-x^2)$. 
+
+This proves that for an $n$ point quadrature including the end points, the interior
+abscissas are in fact the roots of $P_{n-1}^\prime(x)$. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{End Point Weights}
+Following is the proof for the end-point weights for the Lobatto Quadrature. From 
+equation \ref{lobatint_proof} we can see that at the end points of $x=\pm 1$ the 
+quadrature weight is $2/(n(n-1))$. To prove this we need to evaluate the integral of 
+equation \ref{weightint} for the abscissas $x=\pm1$. For $x=1$, this is
+\begin{equation}
+\label{w_xp_1}
+\intunit \frac{\beta(1-x^2)P^\prime_{n-1}(x)}{(1-x)}\dx = w_{x=1}
+\end{equation}
+where $\beta$ is the normalization factor to ensure that the polynomial is equal 
+to $1$ at $x=1$. Because the numerator factors directly, l'Hopital's rule is unnecessary
+to find the normalization, and the integral can be written simply as
+\begin{equation}
+\label{w_xp_2}
+\intunit \frac{(1+x)P^\prime_{n-1}(x)}{2P^\prime_{n-1}(1)}\dx = w_{x=1}
+\end{equation}
+
+First we must evaluate the expression $2P^\prime_{n-1}(1)$. The first several values
+of $P^\prime_m(x=1)$ are
+\begin{align}
+\label{Ppat1}
+P^\prime_0(1) &=0 \nonumber \\
+P^\prime_1(1) &=1 \nonumber \\
+P^\prime_2(1) &=3 \nonumber \\
+P^\prime_3(1) &=6 \nonumber \\
+P^\prime_4(1) &=10
+\end{align}
+and so on. From observation we can see there is a formula of 
+\begin{equation}
+\label{Ppat1_2}
+P^\prime_n(1)=\sum_i^ni = \frac{n(n+1)}{2}
+\end{equation}
+This relation can also be proved from the recursion relation and the definition
+of the Legendre polynomials. Using equation \ref{Ppat1_2} to rewrite equation 
+\ref{w_xp_2} gives
+\begin{equation}
+\label{w_xp_3}
+\intunit \frac{(1+x)P^\prime_{n-1}(x)}{n(n-1))}\dx = w_{x=1}
+\end{equation}
+This integral can now be evaluated by integration-by-parts, 
+\begin{align}
+n(n-1)w_{x=1} &= \intunit (1+x)P^\prime_{n-1}(x)\dx \nonumber\\
+&= \intunit P^\prime_{n-1}(x)\dx + \intunit xP^\prime_{n-1}(x)\dx \nonumber \\
+&= P_{n-1}(x)\vert^1_{-1} + xP_{n-1}(x) \vert^1_{-1} - \intunit P_{n-1}(x)\dx \nonumber \\
+&= P_{n-1}(1)-P_{n-1}(-1)+P_{n-1}(1)+P_{n-1}(-1) - 0 \nonumber \\
+&= P_{n-1}(1)+P_{n-1}(1)\nonumber \\
+\label{xp_int}
+&=2
+\end{align}
+Note that $P_l(1)=1$ for all $l$, and the integral over any Legendre polynomial
+other than $P_0(x)$ is zero. Since $n$ represents the number of points in the integration,
+a one point quadrature is meaningless, since at the very least we count the end points.  
+Therefore, we can rule out the integral over $P_{n-1}$ 
+surviving. Thus for $w_{x=1}$ we have
+\begin{equation}
+w_{x=1}=\frac{2}{n(n-1)}
+\end{equation}
+just as in equation \ref{lobatint_proof}. 
+
+For the weight at $x=-1$, the procedure is very similar, but because the Legendre
+polynomials are alternatively even and odd, their values at $x=-1$ alternate 
+between $\pm1$ and the derivatives, while still the same magnitude as those
+at $x=1$, also alternate between positive and negative.  
+The formula for the derivative value at $x=-1$ is 
+\begin{equation}
+\label{w_xn_1}
+P^\prime_{n-1}=\frac{1}{2}(-1)^nn(n-1)
+\end{equation}
+The integral to be solved is
+\begin{equation}
+\label{w_xn_2}
+\intunit \frac{(-1)^n(1-x)P^\prime_{n-1}(x)}{n(n-1))}\dx = w_{x=1}
+\end{equation}
+and proceding as before in equation \ref{xp_int}
+\begin{align}
+n(n-1)w_{x=-1} &= \intunit (1-x)P^\prime_{n-1}(x)\dx \nonumber \\
+&= \intunit P^\prime_{n-1}(x)\dx - \intunit xP^\prime_{n-1}(x)\dx \nonumber \\
+&= P_{n-1}(x)\vert^1_{-1} - xP_{n-1}(x) \vert^1_{-1} + \intunit P_{n-1}(x)\dx \nonumber \\
+&= P_{n-1}(1)-P_{n-1}(-1)+P_{n-1}(1)+P_{n-1}(-1) - 0 \nonumber \\
+&= P_{n-1}(-1)+P_{n-1}(-1) = 2(-1)^n
+\label{xn_int}
+\end{align}
+which gives
+\begin{equation}
+w_{x=-1}=\frac{(-1)^n2}{(-1)^nn(n-1)} = \frac{2}{n(n-1)}
+\end{equation}
+and so the values of the weights at $x=\pm1$ are proved.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Interior Weights}
+Here we wish to prove that the values for the interior integration weights is given 
+by the formulae, 
+\begin{equation}
+\label{weightform2}
+w_i=\frac{2}{n(n-1)[P_{n-1}(x)]^2} = -\frac{2n}{(1-x_i^2)P_{n-1}^{\prime\prime}(x_i)P_n^\prime(x_i)}
+\end{equation}
+
+Beginning with equation \ref{weightint} and the knowledge that $P_{n-1}^\prime(x)$ is
+the $(n-2)^{th}$ member of a set of polynomials orthogonal with respect to $(1-x^2)$, 
+we can now exactly calculate the integral, 
+\begin{equation}
+\label{pint}
+\intunit \frac{(1-x^2)P^\prime_{n-1}(x)}{(x-x_i)}\dx = \frac{2n}{P^\prime_n(x_i)} \nonumber
+\end{equation}
+where $x_i$ is the $i^{th}$ root of $P^\prime_{n-1}(x)$.
+
+Keeping the simpler notation of $\phi_r(x)=P_{n-1}^\prime(x)$ with $r=n-2$, we make
+use of the Christoffel-Darboux identity \cite{Hildebrand}, 
+\begin{equation}
+\label{CDident}
+\sum_{k=0}^{m}\frac{\phi_k(x)\phi_k(y)}{\gamma_k}=\frac{\phi_{m+1}(x)\phi_m(y)-\phi_m(x)\phi_{m+1}(y)}{a_m\gamma_m(x-y)}
+\end{equation}
+where $a_m=A_{m+1}/A_m$ with $A_m$ is the coeffcient of the $x^m$ term of $\phi_m(x)$, and $\gamma_m$ 
+is defined as \
+\begin{equation}
+\label{gammadef}
+\gamma_m=\intunit w(x)\left(\phi_m(x)\right)^2\dx
+\end{equation}
+
+Now we define $y=x_i$, where $x_i$ is the $i^{th}$ root of the $\phi_m(x)$ polynomial. 
+With this definition, equation \ref{CDident} becomes, 
+\begin{equation}
+\label{CDreduced}
+\sum_{k=0}^{m}\frac{\phi_k(x)\phi_k(x_i)}{\gamma_k}=\frac{-\phi_m(x)\phi_{m+1}(x_i)}{a_m\gamma_m(x-x_i)}
+\end{equation}
+
+Multiplying both sides of equation \ref{CDreduced} by $(1-x^2)\phi_0(x)$ and integrating gives
+\begin{align}
+\intunit (1-x^2)\phi_0(x)\sum_{k=0}^{m}\frac{\phi_k(x)\phi_k(x_i)}{\gamma_k}\dx &= \intunit (1-x^2)\phi_0(x)\frac{-\phi_m(x)\phi_{m+1}(x_i)}{a_m\gamma_m(x-x_i)}\dx \nonumber \\
+\sum_{k=0}^{m}\frac{\phi_k(x_i)}{\gamma_k}\intunit (1-x^2)\phi_0(x)\phi_k(x)\dx &= \intunit (1-x^2)\phi_0(x)\frac{-\phi_m(x)\phi_{m+1}(x_i)}{a_m\gamma_m(x-x_i)}\dx \nonumber \\
+\frac{\phi_0(x_i)}{\gamma_0}\gamma_0 &= \intunit \frac{-(1-x^2)\phi_0(x)\phi_m(x)\phi_{m+1}(x_i)}{a_m\gamma_m(x-x_i)}\dx \nonumber \\
+\phi_0(x_i)=1 &= \frac{\phi_{m+1}(x_i)}{a_m\gamma_m}\intunit (1-x^2)\phi_0(x)\frac{-\phi_m(x)}{(x-x_i)}\dx \nonumber \\
+\label{CDseq}
+\frac{-a_m\gamma_m}{\phi_{m+1}(x_i)} &= \intunit (1-x^2)\phi_0(x)\frac{\phi_m(x)}{(x-x_i)}\dx 
+\end{align}
+Now changing back to Legendre polynomials, we have
+\begin{equation}
+\label{CDPend}
+\intunit \frac{(1-x^2)P_{n-1}^\prime(x)}{x-x_i}\dx = \frac{-a_{n-1}\gamma_{n-1}}{P_n^\prime(x_i)}
+\end{equation}
+
+The leading coefficients of the Legendre polynomials is given by $A_n=(2n)!/[2^n(n!)^2]$, and 
+therefore the leading coefficients of $P_n^\prime(x)$, $A^\prime_n$, are given by  
+\begin{align}
+\label{Aprime}
+A^\prime_n&=\frac{n(2n)!}{2^n(n!)^2} \\
+a_{n-1}&=\frac{A^\prime_n}{A^\prime_{n-1}}\\
+&=\frac{n(2n)!2^{n-1}((n-1)!)^2}{(n-1)(2n-2)!2^n(n!)^2} \\
+&= \frac{2n-1}{n-1}
+\end{align}
+It can also be shown that 
+\begin{equation}
+\label{gammasolve}
+\gamma_{n-1}=\intunit(1-x^2)\left(P_{n-1}^\prime(x)\right)^2 \dx = \frac{2n(n-1)}{2n-1}
+\end{equation}
+Employing these values for $a_{n-1}$ and $\gamma_{n-1}$ in equation \ref{CDPend}
+we have 
+\begin{equation}
+\intunit \frac{(1-x^2)P_{n-1}^\prime(x)}{x-x_i}\dx = \frac{2n}{P_n^\prime(x_i)}
+\end{equation}
+which is precisely equation \ref{pint}, which we initially set out to prove, and we 
+are left with the equation 
+\begin{equation}
+\label{weightform3}
+w_i= -\frac{2n}{(1-x_i^2)P_{n-1}^{\prime\prime}(x_i)P_n^\prime(x_i)}
+\end{equation}
+for the interior integration weights. 
+
+This concludes the derivation of the Lobatto Quadrature. 
+
+
+
+
+
+
+\bibliographystyle{apsrev}
+\bibliography{biblist}
+\end{document}
