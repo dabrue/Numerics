@@ -44,6 +44,8 @@ class LegendreBasis:
 ##########################################################################################
 class HermiteBasis:
     '''
+    This routine generates Hermite Polynomial basis functions that are orthonormalized
+    over the given region. 
     '''
     def __init__(self, X, Order, sigma, normalized=False, derivatives=0):
         self.X = X
@@ -51,6 +53,11 @@ class HermiteBasis:
         self.sigma = sigma
         self.normalized = normalized
         self.derivatives = derivatives
+        Npts = len(x)
+        self.Npts = Npts
+        self.D = []
+
+        D0 = numpy.zeros((Npts,Npts
 
     def _gen_H():
         pass
