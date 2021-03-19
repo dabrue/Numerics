@@ -3,8 +3,6 @@
 Module providing routines for Distributed Approximating Functionals numerical methods
 
 Daniel Brue, 2021
-
-
 '''
 import math
 import numpy as np
