@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 '''
+
 Module providing routines for Distributed Approximating Functionals numerical methods
 
-Daniel Brue, 2021
+Daniel A. Brue, 2021
+
 '''
+
+__author__ = 'Daniel A. Brue'
+__email__  = 'danielbrue@gmail.com'
+__date__   = '2021'
+
 import math
 import numpy as np
 import scipy as sp
@@ -107,17 +114,61 @@ def integration_weights(Xray,method='trapazoid',equalSpaced=False):
             weight[-2] = 4
             weight[-2] = 1
         else:
-            # Iterate off of the middle point of the block of three points. 
+            # Iterate off of the middle point of the block of three points. For every
+            # set of three points, we find the analytic terms that lead each value
+            # of the function over this range. 
+
             for i in range(1,Npts,2):
-            
 
-        
+                # index translation: 
+                i0 = i - 1  # = [0] refers to term [0] or the first point in this block
+                i1 = i      # = [1] second index in this block
+                i2 = i + 1  # = [2] third index in this block
 
+                Q = 1.0/((Xray[i2]-Xray[i1])*(Xray[i1]-Xray[i0])*(Xray[i2]-Xray[i0]))
+
+                cf = np.zeros(3,dtype=np.float64)
+                bf = np.zeros(3,dtype=np.float64)
+                af = np.zeros(3,dtype=np.float64)
+                wgt = np.zeros(3,dtype=np.float64)
+
+                # Check doc appendix for derivation. Lots of algebra, but the closed
+                # forms for each term's contribution to the integral as separated by
+                # like terms of f[] are given below. 
+                cf[0] = (Xray[i2]-Xray[i1])*Q
+                cf[1] = (Xray[i0]-Xray[i2])*Q
+                cf[2] = (Xray[i1]-Xray[i0])*Q
+                # b = (f1-f0)/(x1-x0)-(x1+x0)*c
+                bf[0] = 1/(Xray[i0]-Xray[i1]) - (Xray[i1]+Xray[i0])*cf[0]
+                bf[1] = 1/(Xray[i1]-Xray[i0]) - (Xray[i1]+Xray[i0])*cf[1]
+                bf[2] = - (Xray[i1]+Xray[i0])*cf[2]
+                # a = f0-x0 * b - x0**2 * c
+                af[0] = Xray[i0]*bf[0] - Xray[i0]**2 * cf[0] + 1  # +1 for the f0  term
+                af[1] = Xray[i0]*bf[1] - Xray[i0]**2 * cf[1]
+                af[2] = Xray[i0]*bf[2] - Xray[i0]**2 * cf[2]
+
+                wgt[0] =(Xray[i2]   -Xray[i0]   )*af[0] + 
+                        (Xray[i2]**2-Xray[i0]**2)*bf[0]/2 +
+                        (Xray[i2]**3-Xray[i0]**3)*cf[0]/3
+
+                wgt[1] =(Xray[i2]   -Xray[i0])   *af[1] + 
+                        (Xray[i2]**2-Xray[i0]**2)*bf[1]/2 +
+                        (Xray[i2]**3-Xray[i0]**3)*cf[1]/3
+
+                wgt[2] =(Xray[i2]   -Xray[i0]   )*af[2] + 
+                        (Xray[i2]**2-Xray[i0]**2)*bf[2]/2 +
+                        (Xray[i2]**3-Xray[i0]**3)*cf[2]/3
+
+                weights[i0] += wgt[0]
+                weights[i1] += wgt[1]
+                weights[i2] += wgt[2]
 
     else:
         print('ERROR: Unrecognized integration method = ',method)
         print('check inputs to DAF.integration_weights'
         exit(1)
+
+    return weights
 
 
 #-----------------------------------------------------------------------------------------
@@ -224,6 +275,7 @@ class DAF:
             raise('ERROR: Unidentified Polynomial Expansion : ', PolyBase)
             exit()
 
+##########################################################################################
 if (__name__ == '__main__'):
 
     import re
