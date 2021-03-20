@@ -8,6 +8,7 @@ import math
 import numpy as np
 import scipy as sp
 import scipy.special as sps
+import scipy.linalg as spla
 import multiprocessing as mp
 import daf_sigmaOpt
 
@@ -53,6 +54,71 @@ for i in range(0,MaxLegendreExpansion,2):
 
 ##########################################################################################
 # SUBROUTINES FOR DAF GENERATION, INTERNAL USE INTENDED
+
+#-----------------------------------------------------------------------------------------
+def integration_weights(Xray,method='trapazoid',equalSpaced=False):
+
+    weights = numpy.zeros_like(Xray)
+
+    Npts = len(Xray)
+    dx = (Xray[-1] - Xray[0])/(Npts-1)  # ONLY USED IF ALL POINTS EQUAL SPACED
+
+    if (method == 'midpoint' and equalSpaced):
+        '''
+        The midpoint method works best when the following two conditions are met: 
+        1. The function analyzied has compact support and is nearly zero at the endpoints
+        2. The sampled points of the function are equidistant in X (e.g. by np.linspace)
+        
+        If these are not met, the trapazoidal function is recommended. 
+        '''
+        weights = numpy.ones_like(Xray)*dx
+    
+    elif (method == 'trapazoid'):
+        weights[0] = (Xray[1]-Xray[0])/2
+        for i in range(1,Npts-1):
+            weights[i] = (Xray[i+1]-Xray[i-1])/2
+        weights[-1] = (Xray[-1]-Xray[-2])/2
+
+    elif (method == 'Simpsons'):
+        '''
+        Simpson's Method of integration works by fitting a parabola to consecutive
+        elements in Xray. This only works for the full range if there are an odd number
+        of points. 
+
+        Calculations can be speeded by multiprocessing this, but unless Xray is 
+        staggeringly enormous, the time spent here is not significant and simpler
+        code is better. 
+
+        A further note: this calculation can be reduced if the Xray array 
+        is a set of equally spaced points. In 
+        '''
+        if (    Npts % 2 == 0):
+            print("ERROR: Simpson's integration called with an even number of points.") 
+            exit()
+
+        if (equalSpaced):
+            # If the Xray points are evenly spaced, the formula for finding the area under
+            # the parabola is simple, A = (f(x0) + 4*f(x0+dx) + f(x0+ 2*dx)*dx/3
+            # or more simply, A = (f[0]+4*f[1]+f[2])*dx/3
+            weight[0] = 1.0
+            for i in range(1,Npts-1,2):
+                weight[i] = 4
+                weight[i+1] = 2
+            weight[-2] = 4
+            weight[-2] = 1
+        else:
+            # Iterate off of the middle point of the block of three points. 
+            for i in range(1,Npts,2):
+            
+
+        
+
+
+    else:
+        print('ERROR: Unrecognized integration method = ',method)
+        print('check inputs to DAF.integration_weights'
+        exit(1)
+
 
 #-----------------------------------------------------------------------------------------
 def _exp_Hermite_delta(x,M):
