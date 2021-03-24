@@ -1,0 +1,174 @@
+\begin{thebibliography}{22}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\expandafter\ifx\csname bibnamefont\endcsname\relax
+  \def\bibnamefont#1{#1}\fi
+\expandafter\ifx\csname bibfnamefont\endcsname\relax
+  \def\bibfnamefont#1{#1}\fi
+\expandafter\ifx\csname citenamefont\endcsname\relax
+  \def\citenamefont#1{#1}\fi
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\providecommand{\bibinfo}[2]{#2}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{\citenamefont{Hoffman et~al.}(1991)\citenamefont{Hoffman, Nayar,
+  Sharafeddin, and Kouri}}]{Kouri-DAF1}
+\bibinfo{author}{\bibfnamefont{D.~K.} \bibnamefont{Hoffman}},
+  \bibinfo{author}{\bibfnamefont{N.}~\bibnamefont{Nayar}},
+  \bibinfo{author}{\bibfnamefont{O.~A.} \bibnamefont{Sharafeddin}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Kouri}},
+  \bibinfo{journal}{J. Phys. Chem.} \textbf{\bibinfo{volume}{95}},
+  \bibinfo{pages}{8299} (\bibinfo{year}{1991}).
+
+\bibitem[{\citenamefont{Hoffman and Kouri}(1992)}]{Kouri-DAF2}
+\bibinfo{author}{\bibfnamefont{D.~K.} \bibnamefont{Hoffman}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Kouri}},
+  \bibinfo{journal}{J. Phys. Chem} \textbf{\bibinfo{volume}{96}},
+  \bibinfo{pages}{1179} (\bibinfo{year}{1992}).
+
+\bibitem[{\citenamefont{Kouri et~al.}(1992)\citenamefont{Kouri, Zhu, Ma,
+  Pettitt, and Hoffman}}]{Kouri-DAF3}
+\bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Kouri}},
+  \bibinfo{author}{\bibfnamefont{W.}~\bibnamefont{Zhu}},
+  \bibinfo{author}{\bibfnamefont{X.}~\bibnamefont{Ma}},
+  \bibinfo{author}{\bibfnamefont{B.~M.} \bibnamefont{Pettitt}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{D.~K.}
+  \bibnamefont{Hoffman}}, \bibinfo{journal}{J. Phys. Chem.}
+  \textbf{\bibinfo{volume}{96}}, \bibinfo{pages}{9622} (\bibinfo{year}{1992}).
+
+\bibitem[{\citenamefont{Kouri and Hoffman}(1992)}]{Kouri-DAF4}
+\bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Kouri}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{D.~K.} \bibnamefont{Hoffman}},
+  \bibinfo{journal}{J. Phys. Chem.} \textbf{\bibinfo{volume}{96}},
+  \bibinfo{pages}{9631} (\bibinfo{year}{1992}).
+
+\bibitem[{\citenamefont{Nayar et~al.}(1992)\citenamefont{Nayar, Hoffman, Ma,
+  and Kouri}}]{Kouri-DAF5}
+\bibinfo{author}{\bibfnamefont{N.}~\bibnamefont{Nayar}},
+  \bibinfo{author}{\bibfnamefont{D.~K.} \bibnamefont{Hoffman}},
+  \bibinfo{author}{\bibfnamefont{X.}~\bibnamefont{Ma}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Kouri}},
+  \bibinfo{journal}{J. Phys. Chem.} \textbf{\bibinfo{volume}{96}},
+  \bibinfo{pages}{9637} (\bibinfo{year}{1992}).
+
+\bibitem[{\citenamefont{Hoffman and Kouri}(1993)}]{Kouri-DAF6}
+\bibinfo{author}{\bibfnamefont{D.~K.} \bibnamefont{Hoffman}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Kouri}},
+  \bibinfo{journal}{J. Phys. Chem} \textbf{\bibinfo{volume}{97}},
+  \bibinfo{pages}{4984} (\bibinfo{year}{1993}).
+
+\bibitem[{\citenamefont{II et~al.}(1994)\citenamefont{II, Arnold, Hoffman, Zhu,
+  Huang, and Kouri}}]{Kouri-DAF7}
+\bibinfo{author}{\bibfnamefont{T.~L.~M.} \bibnamefont{II}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Arnold}},
+  \bibinfo{author}{\bibfnamefont{D.~K.} \bibnamefont{Hoffman}},
+  \bibinfo{author}{\bibfnamefont{W.}~\bibnamefont{Zhu}},
+  \bibinfo{author}{\bibfnamefont{Y.}~\bibnamefont{Huang}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Kouri}},
+  \bibinfo{journal}{Phys. Rev. E} \textbf{\bibinfo{volume}{50}},
+  \bibinfo{pages}{2320} (\bibinfo{year}{1994}).
+
+\bibitem[{\citenamefont{Wyatt et~al.}(2000)\citenamefont{Wyatt, Kouri, and
+  Hoffman}}]{QTM}
+\bibinfo{author}{\bibfnamefont{R.~E.} \bibnamefont{Wyatt}},
+  \bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Kouri}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{D.~K.} \bibnamefont{Hoffman}},
+  \bibinfo{journal}{J. Phys. Chem.} \textbf{\bibinfo{volume}{112}},
+  \bibinfo{pages}{10730} (\bibinfo{year}{2000}).
+
+\bibitem[{\citenamefont{Szalay}(1998)}]{DAF-Szalay1}
+\bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Szalay}}, \bibinfo{journal}{J.
+  Chem. Phys.} \textbf{\bibinfo{volume}{108}}, \bibinfo{pages}{2847}
+  (\bibinfo{year}{1998}).
+
+\bibitem[{\citenamefont{Wei et~al.}(1998{\natexlab{a}})\citenamefont{Wei,
+  Zhang, Althorpe, Kouri, and Hoffman}}]{NVS}
+\bibinfo{author}{\bibfnamefont{G.~W.} \bibnamefont{Wei}},
+  \bibinfo{author}{\bibfnamefont{D.~S.} \bibnamefont{Zhang}},
+  \bibinfo{author}{\bibfnamefont{S.~C.} \bibnamefont{Althorpe}},
+  \bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Kouri}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{D.~K.} \bibnamefont{Hoffman}},
+  \bibinfo{journal}{Computer Physics Communications}
+  \textbf{\bibinfo{volume}{115}}, \bibinfo{pages}{18}
+  (\bibinfo{year}{1998}{\natexlab{a}}).
+
+\bibitem[{\citenamefont{Wei et~al.}(1998{\natexlab{b}})\citenamefont{Wei,
+  Zhang, Kouri, and Hoffman}}]{Burgers}
+\bibinfo{author}{\bibfnamefont{G.~W.} \bibnamefont{Wei}},
+  \bibinfo{author}{\bibfnamefont{D.~S.} \bibnamefont{Zhang}},
+  \bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Kouri}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{D.~K.} \bibnamefont{Hoffman}},
+  \bibinfo{journal}{Computer Physics Communications}
+  \textbf{\bibinfo{volume}{111}}, \bibinfo{pages}{93}
+  (\bibinfo{year}{1998}{\natexlab{b}}).
+
+\bibitem[{\citenamefont{Szalay and Smith}(1999)}]{DAF-Szalay2}
+\bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Szalay}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{S.~C.} \bibnamefont{Smith}},
+  \bibinfo{journal}{J. Chem. Phys.} \textbf{\bibinfo{volume}{110}},
+  \bibinfo{pages}{72} (\bibinfo{year}{1999}).
+
+\bibitem[{\citenamefont{Hoffman et~al.}(1998)\citenamefont{Hoffman, Wei, Zhang,
+  and Kouri}}]{SGWD}
+\bibinfo{author}{\bibfnamefont{D.~K.} \bibnamefont{Hoffman}},
+  \bibinfo{author}{\bibfnamefont{G.~W.} \bibnamefont{Wei}},
+  \bibinfo{author}{\bibfnamefont{D.~S.} \bibnamefont{Zhang}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Kouri}},
+  \bibinfo{journal}{Chem. Phys. Lett.} \textbf{\bibinfo{volume}{287}},
+  \bibinfo{pages}{119} (\bibinfo{year}{1998}).
+
+\bibitem[{\citenamefont{Szalay}(1999)}]{DAF-Szalay3}
+\bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Szalay}}, \bibinfo{journal}{J.
+  Chem. Phys.} \textbf{\bibinfo{volume}{111}}, \bibinfo{pages}{8804}
+  (\bibinfo{year}{1999}).
+
+\bibitem[{Her()}]{HermiteWiki}
+\emph{\bibinfo{title}{Hermite polynomials}},
+  \bibinfo{howpublished}{https://en.wikipedia.org/wiki/Hermite{\_}polynomials}.
+
+\bibitem[{\citenamefont{Weisstein}({\natexlab{a}})}]{HermitePolyMW}
+\bibinfo{author}{\bibfnamefont{E.}~\bibnamefont{Weisstein}},
+  \emph{\bibinfo{title}{Legendre polynomial}}, \bibinfo{howpublished}{From
+  MathWorld--A Wolfram Web Resource.
+  https://mathworld.wolfram.com/HermitePolynomial.html}.
+
+\bibitem[{\citenamefont{Burden and Faires}(1993)}]{Burden_gaussquad}
+\bibinfo{author}{\bibfnamefont{R.~L.} \bibnamefont{Burden}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{J.~D.} \bibnamefont{Faires}},
+  \emph{\bibinfo{title}{Numerical Analysis}} (\bibinfo{publisher}{PWS
+  Publishing Company}, \bibinfo{year}{1993}), \bibinfo{edition}{5th} ed.
+
+\bibitem[{\citenamefont{Weisstein}({\natexlab{b}})}]{LegendrePoly}
+\bibinfo{author}{\bibfnamefont{E.}~\bibnamefont{Weisstein}},
+  \emph{\bibinfo{title}{Legendre polynomial}}, \bibinfo{howpublished}{From
+  MathWorld--A Wolfram Web Resource.
+  http://mathworld.wolfram.com/LegendrePolynomial.html}.
+
+\bibitem[{\citenamefont{Dahlquist and \r{A}ke
+  Bj\"orck}(1974)}]{Dahlquist_gaussquad}
+\bibinfo{author}{\bibfnamefont{G.}~\bibnamefont{Dahlquist}} \bibnamefont{and}
+  \bibinfo{author}{\bibnamefont{\r{A}ke Bj\"orck}},
+  \emph{\bibinfo{title}{Numerical Methods}} (\bibinfo{publisher}{Prentice
+  Hall}, \bibinfo{year}{1974}).
+
+\bibitem[{\citenamefont{Abramowitz and Stegun}(1972)}]{ABRW-STGN}
+\bibinfo{editor}{\bibfnamefont{M.}~\bibnamefont{Abramowitz}} \bibnamefont{and}
+  \bibinfo{editor}{\bibfnamefont{I.~A.} \bibnamefont{Stegun}}, eds.,
+  \emph{\bibinfo{title}{Handbook of Mathematical Functions}}
+  (\bibinfo{publisher}{Dover}, \bibinfo{year}{1972}), \bibinfo{edition}{10th}
+  ed.
+
+\bibitem[{\citenamefont{Weisstein}({\natexlab{c}})}]{LobattoQuad}
+\bibinfo{author}{\bibfnamefont{E.}~\bibnamefont{Weisstein}},
+  \emph{\bibinfo{title}{Lobatto quadrature}}, \bibinfo{howpublished}{From
+  MathWorld--A Wolfram Web Resource.
+  http://mathworld.wolfram.com/LobattoQuadrature.html}.
+
+\bibitem[{\citenamefont{Hildebrand}(1974)}]{Hildebrand}
+\bibinfo{author}{\bibfnamefont{F.~B.} \bibnamefont{Hildebrand}},
+  \emph{\bibinfo{title}{Introduction to Numerical Analysis}}
+  (\bibinfo{publisher}{Dover}, \bibinfo{year}{1974}), \bibinfo{edition}{2nd}
+  ed.
+
+\end{thebibliography}
