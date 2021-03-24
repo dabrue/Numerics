@@ -24,10 +24,10 @@ import daf_sigmaOpt
 rtpi = math.sqrt(math.pi)  # save us many, many function calls
 
 # Limits and sanity checks
-MaxHermiteExpansion = 101
-MaxLegendreExpansion = 101
-MaxLaguerreExpansion = 101
-MaxChebyshevExpansion = 101
+MaxHermiteExpansion = 1001
+MaxLegendreExpansion = 1001
+MaxLaguerreExpansion = 1001
+MaxChebyshevExpansion = 1001
 
 #-----------------------------------------------------------------------------------------
 # The DAF routine uses dirac delta functions expanded in terms of orthonormal polynomials.
@@ -172,17 +172,18 @@ def integration_weights(Xray,method='trapazoid',equalSpaced=False):
 
 
 #-----------------------------------------------------------------------------------------
-def _exp_Hermite_delta(x,M):
+def _exp_Hermite_delta(x,sigma,M):
 
     # Recurrance: H[n+1] = 2*x*H[n] = 2*n*H[n-1]
-
+    
+    xs = x/sigma  # The argument for the expansion is x/sigma
     H=[]
     H.append(1.0)
-    H.append(x)
+    H.append(xs)
 
     # Use the recursion formula to get values of hermite polinomials at give x 
     for n in range(2,M+1):
-        H.append( (2*x*H[-1] - 2*(n-2)*H[-2]) )
+        H.append( (2*xs*H[-1] - 2*(n-2)*H[-2]) )
 
     # Add the normalization factor so that int(Hn Hm W) = 1
     for n in range(0,len(H),2):
@@ -236,14 +237,34 @@ def _gen_ChebyT_delta(x,M):
 # NOTE: The matrix generation routines are excellent candidates for parallelization. 
 
 #-----------------------------------------------------------------------------------------
-def gen_Hermite(Xray, M, DerOrder, sigma = None):
+def gen_Hermite(Xray, Xbar, M, DerOrder, sigma = None):
+    '''
+    This routine generates the DAF matrices using a Hermite Polynomial basis. 
+
+    INPUT:
+    Xray - Points where the value of f is known. 
+    Xbar - Points for desired values of f or its derivatives.
+    M - Expansion limit, the number of Hermite polynomials used for delta(x)
+    DerOrder - highest order of derivative to be calculated. 
+    sigma - scaling factor for the x domain to be used to increase accuracy of delta
+
+    OUTPUT:
+    HDAF - list of np matrices. The index of the list corresponds to derivative order
+
+    NOTES: Frequenly, Xray and Xbar are the same array, but they do not have to be. 
+    This routine does makes the assumption they are not, and there is no computational
+    benefit here, e.g. symmetry. I'll add options for taking advantage of 
+    symmetries and periodicities in an updated version.
+    '''
+
     # If sigma is specified, use it, otherwise find an optimal value
     if (not sigma):
         sigma = daf_sigmaOpt.sigmaOptHermite(Xray, M)
     sigma=1.0
 
     # get the expansion coefficients
-    HC = _exp_Hermite_delta(Xray, M) / sigma
+    x = 0.0  # Hermite coefficients depend on H_n(0) terms, so get those from recursion.
+    HC = _exp_Hermite_delta(s, sigma, M)
     return(np.array((1,1),dtype=np.float64))
 
 #-----------------------------------------------------------------------------------------

@@ -9,17 +9,17 @@
 \newcommand{\dx}{{\rm d}x}
 \newcommand{\dy}{{\rm d}y}
 \newcommand{\wbar}{\ensuremath{\bar{w}}}
+\newcommand{\Xray}{\ensuremath{\bf{x}}}
+\newcommand{\Xbar}{\ensuremath{\bf{\bar{x}}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
 \title{%
     Distributed Approximating Functionals\\
-    %\vspace{0.5cm}
     {\small Theory and Computational Methodology}\\
 }
 \author{Daniel A. Brue}
-%\email{danielbrue (at) Gmail}
 \date{\today}
 
 \begin{abstract}
@@ -98,7 +98,8 @@ To determine the expansion coefficients $h_m$, we begin with equation \ref{eqn_d
 and multiply each side by $H_n(x/\sigma)$ and integrate over $(-\infty,\infty)$, 
 \begin{eqnarray}
 \label{eqn_deltaHexp1}
-\intl_{-\infty}^{\infty}H_n\left(\frac{x}{\sigma}\right)\delta(x)dx & = & \intl_{-\infty}^{\infty}H_n\left(\frac{x}{\sigma}\right)\sum_{m=0}^\infty h_m H_m\left(\frac{x}{\sigma}\right) e^{-\left(\frac{x}{\sigma}\right)} dx \\*
+\intl_{-\infty}^{\infty}H_n\left(\frac{x}{\sigma}\right)\delta(x)dx & = & 
+ \intl_{-\infty}^{\infty}H_n\left(\frac{x}{\sigma}\right)\sum_{m=0}^\infty h_m H_m\left(\frac{x}{\sigma}\right) e^{-\left(\frac{x}{\sigma}\right)} dx \\*
 H_n(0) & = & 
 \sum_{m=0}^\infty h_m \intl_{-\infty}^{\infty}H_n\left(\frac{x}{\sigma}\right)
 H_m\left(\frac{x}{\sigma}\right) e^{-\left(\frac{x}{\sigma}\right)} dx 
@@ -157,20 +158,69 @@ $\sigma$ and $M$, and is exact as $M\to\infty$,
 \Delta_{\sigma,M}(x) = \sum_m^M h_m H_m \left(\frac{x}{\sigma}\right)e^{- \left(\frac{x}{\sigma}\right)^2}
 \end{equation}
 
-%-----------------------------------------------------------------------------------------
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Application}
+
 Here we assess some test cases to show how the DAF method functions in practice. 
 
+
+%-----------------------------------------------------------------------------------------
 \subsection{One-Dimensional}
 
+Let's assume we have a set of coordinate points, $(x_0,f_0),(x_1,f_1),...$ that represent
+some measured data or a given function. The set of $x$ values we will describe as ${\bf x}$
+and we have
+\begin{equation*}
+f({\bf x}) = {\bf f}
+\end{equation*}
+where ${\bf x, f}$ are sets of discrete points, and any of these individual points will
+be referenced as $x_i$, for example. 
+
+Next we define another set of points along the $x$ axis. These are the points at which
+we want values or derivatives for the function $f(x)$. This we call ${\bf \bar{x}}$
+{\bf Note} that $x$ and $\bar{x}$ are coordinates on the same $x$-axis, but represent
+different, independent coordinates. This is important, because formally we are using
+the DAF method as an operator to transform discrete points $\bf{x}$ into an analytic
+funtion on the domain of $\bf{\bar{x}}$. This can be tricky to keep straight, but it
+is important because some times we will operate $\bf{x}$ space and sometimes on $\bf{\bar{x}}$. 
+
+From the properties of the $\delta(x)$ function, we can now write an identity for
+calculating a single point of $f$ in the domain of $x$ (not $\bar{x}$). 
+\begin{equation}
+\label{eqn_fdelt_ident}
+f(\bar{x}_i) = \int\delta(\bar{x}_i-x)f(x){\rm d}x
+\end{equation}
+
+Now, we only know the values of $f$ at the points $x$, so in practice this integral
+will be a summation of some form with appropriate weight factors, $w_i$. 
+\begin{equation}
+\label{eqn_fdelt_sum}
+f(\bar{x}_i) = \sum_j w_j \delta(\bar{x}_i-x_j)f(x_j)
+\end{equation}
+
+Next, we replace the $\delta$ function with the expansion defined in equation 
+\ref{eqn_DeltaExpansion} to get the following...
+\begin{eqnarray}
+f(\bar{x}_i) &=& \sum_j w_j \delta(\bar{x}_i-x_j)f(x_j) \\
+f(\bar{x}_i) &=& \sum_j w_j \Delta_{\sigma,M}\left(\frac{x_i-\bar{x}_j}{\sigma}\right)f(x_j) \\
+\bar{f}_i & = &  \sum_j {\bf D}_{\sigma M,ij} {\bf f}_j
+\end{eqnarray}
+
+Where we have defined $D_{\sigma M, ij}$ as the combination of the integration weights, $w_j$ and 
+the $\delta$ function expansion. 
+
+
+
+
+%-----------------------------------------------------------------------------------------
 \subsection{Multi-Dimensional}
+
 In a multi-dimensional application, we use the DAF to approximate a function such as
 \begin{equation}
-f(x,y,z) = \int\int\int f(x,y,z)\delta(x)\delta(y)\delta(z) {\rm d}x {\rm d}y {\rm d}z
+f(x,y,z) = \iiint f(x,y,z)\delta(x)\delta(y)\delta(z) {\rm d}x {\rm d}y {\rm d}z
 \end{equation}
-or in fector notation for simplicity: 
+or in vector notation for simplicity: 
 \begin{equation}
 f({\bf r}) = \int_{\bf V} f({\bf r})\delta({\bf r}){\rm d}{\bf V}
 \end{equation}
@@ -183,6 +233,7 @@ dimensions.
 
 
 
+%=========================================================================================
 \section{ITEMS TO INCLUDE IN TEXT}
 {\bf NOTE: Toeplitz Matrices?}
 
