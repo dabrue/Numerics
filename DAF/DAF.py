@@ -65,7 +65,7 @@ for i in range(0,MaxLegendreExpansion,2):
 #-----------------------------------------------------------------------------------------
 def integration_weights(Xray,method='trapazoid',equalSpaced=False):
 
-    weights = numpy.zeros_like(Xray)
+    weights = np.zeros_like(Xray)
 
     Npts = len(Xray)
     dx = (Xray[-1] - Xray[0])/(Npts-1)  # ONLY USED IF ALL POINTS EQUAL SPACED
@@ -78,7 +78,7 @@ def integration_weights(Xray,method='trapazoid',equalSpaced=False):
         
         If these are not met, the trapazoidal function is recommended. 
         '''
-        weights = numpy.ones_like(Xray)*dx
+        weights = np.ones_like(Xray)*dx
     
     elif (method == 'trapazoid'):
         weights[0] = (Xray[1]-Xray[0])/2
@@ -147,16 +147,16 @@ def integration_weights(Xray,method='trapazoid',equalSpaced=False):
                 af[1] = Xray[i0]*bf[1] - Xray[i0]**2 * cf[1]
                 af[2] = Xray[i0]*bf[2] - Xray[i0]**2 * cf[2]
 
-                wgt[0] =(Xray[i2]   -Xray[i0]   )*af[0] + 
-                        (Xray[i2]**2-Xray[i0]**2)*bf[0]/2 +
+                wgt[0] =(Xray[i2]   -Xray[i0]   )*af[0] +    \
+                        (Xray[i2]**2-Xray[i0]**2)*bf[0]/2 +  \
                         (Xray[i2]**3-Xray[i0]**3)*cf[0]/3
 
-                wgt[1] =(Xray[i2]   -Xray[i0])   *af[1] + 
-                        (Xray[i2]**2-Xray[i0]**2)*bf[1]/2 +
+                wgt[1] =(Xray[i2]   -Xray[i0])   *af[1] +    \
+                        (Xray[i2]**2-Xray[i0]**2)*bf[1]/2 +  \
                         (Xray[i2]**3-Xray[i0]**3)*cf[1]/3
 
-                wgt[2] =(Xray[i2]   -Xray[i0]   )*af[2] + 
-                        (Xray[i2]**2-Xray[i0]**2)*bf[2]/2 +
+                wgt[2] =(Xray[i2]   -Xray[i0]   )*af[2] +    \
+                        (Xray[i2]**2-Xray[i0]**2)*bf[2]/2 +  \
                         (Xray[i2]**3-Xray[i0]**3)*cf[2]/3
 
                 weights[i0] += wgt[0]
@@ -201,7 +201,7 @@ def _gen_Legendre_delta(x,M):
     PC.append(x)
     for n in range(2,M+1):
         # note below the n value is shifted by 1 from recurrance
-        PC.append(((2*n-3)*x*P[-1] - (n-1)*P[-2]) * PdeltaC[n])  
+        PC.append(((2*n-3)*x*PC[n-1] - (n-1)*PC[n-2]) * PC[n])  
     PC=np.array(PC)
     return PC
 
@@ -253,6 +253,9 @@ def gen_Legendre(Xray, M, DerOrder):
 #-----------------------------------------------------------------------------------------
 def gen_Laguerre(Xray, M, DerOrder, sigma = None):
     pass
+#-----------------------------------------------------------------------------------------
+def gen_Chebyshev(Xray, M, DerOrder, sigma = None):
+
 
 
 class DAF:
