@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.3.18)  24 MAR 2021 12:25
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.3.18)  24 MAR 2021 14:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -163,22 +163,22 @@ Class revtex4 Info: multicol was not loaded (OK!) on input line 16.
 
 Class revtex4 Warning: Assuming \noaffiliation for Daniel A. Brue.
 
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] [4] [5]
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] [4] [5] [6]
 \openout2 = `lobatto_daf.aux'.
 
 
-(./lobatto_daf.tex [6] [7] [8] [9]
+(./lobatto_daf.tex [7] [8] [9] [10]
 
-LaTeX Warning: Reference `lipdef' on page 10 undefined on input line 157.
+LaTeX Warning: Reference `lipdef' on page 11 undefined on input line 157.
 
-[10] [11] [12] [13] [14] [15] [16] [17] [18]) [19
-\newlabel{weightform3}{{A74}{19}{}{}{}}
+[11] [12] [13] [14] [15] [16] [17] [18] [19]) [20
+\newlabel{weightform3}{{A74}{20}{}{}{}}
 ]
 \openout2 = `simpsons_daf.aux'.
 
- (./simpsons_daf.tex) [20
+ (./simpsons_daf.tex) [21
 \@writefile{toc}{\contentsline {section}{\numberline {B}Integration Methods for
- the DAF Operators}{20}{}}
+ the DAF Operators}{21}{}}
 ] (./daf.bbl
 Underfull \hbox (badness 5578) in paragraph at lines 131--135
 []\OT1/cmr/m/n/10.95 E. Weis-stein, \OT1/cmr/m/it/10.95 Leg-en-dre poly-no-mial
@@ -197,16 +197,16 @@ Underfull \hbox (badness 8056) in paragraph at lines 163--167
 1/cmr/m/n/10.95 , From MathWorld--A Wol-fram Web Re-source.
  []
 
-[21]) [22] (./daf.aux (./lobatto_daf.aux) (./simpsons_daf.aux))
+[22]) [23] (./daf.aux (./lobatto_daf.aux) (./simpsons_daf.aux))
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 2772 strings out of 483183
- 35591 string characters out of 5966292
- 289676 words of memory out of 5000000
- 17802 multiletter control sequences out of 15000+600000
+ 2774 strings out of 483183
+ 35632 string characters out of 5966292
+ 289726 words of memory out of 5000000
+ 17804 multiletter control sequences out of 15000+600000
  539620 words of font info for 48 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  30i,10n,25p,242b,305s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -215,20 +215,22 @@ Here is how much of TeX's memory you used:
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/sh
 are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pf
-b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr
-/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on daf.pdf (22 pages, 236301 bytes).
+exmf-dist/fonts/type1/public/amsfonts/cmextra/cmex8.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
+8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb>
+Output written on daf.pdf (23 pages, 256073 bytes).
 PDF statistics:
- 140 PDF objects out of 1000 (max. 8388607)
- 99 compressed objects within 1 object stream
+ 152 PDF objects out of 1000 (max. 8388607)
+ 107 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

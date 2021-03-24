@@ -1,3 +1,6 @@
 {
-    "workbench.colorTheme": "Abyss"
+    "files.autoSave": "afterDelay",
+    "editor.fontFamily": "'Roboto Mono'",
+    "workbench.preferredDarkColorTheme": "Abyss",
+    "workbench.preferredLightColorTheme": "Quiet Light"
 }

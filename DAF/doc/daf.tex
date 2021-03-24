@@ -155,7 +155,7 @@ From this we define a function, $\Delta_{\sigma,M}(x)$ that depends parametrical
 $\sigma$ and $M$, and is exact as $M\to\infty$, 
 \begin{equation}
 \label{eqn_DeltaExpansion}
-\Delta_{\sigma,M}(x) = \sum_m^M h_m H_m \left(\frac{x}{\sigma}\right)e^{- \left(\frac{x}{\sigma}\right)^2}
+\Delta_{\sigma,M}(x) = \sum_{m=0}^M h_m H_m \left(\frac{x}{\sigma}\right)e^{- \left(\frac{x}{\sigma}\right)^2}
 \end{equation}
 
 
@@ -163,10 +163,31 @@ $\sigma$ and $M$, and is exact as $M\to\infty$,
 \section{Application}
 
 Here we assess some test cases to show how the DAF method functions in practice. 
-
+and with this function, we can approximate any function with
+\begin{equation}
+\label{eqn_f0delta_ident}
+f(x) = \int f(y)\Delta_{\sigma,M}(y-x) {\rm d}y
+\end{equation}
+Note here also that taking the derivative with respect to $x$ in the above equation
+gives
+\begin{equation}
+\label{eqn_f1delta_ident}
+\frac{{\rm d}}{{\rm d}x}f(x) = 
+    \int f(y) \frac{{\rm d}}{{\rm d}x}\left[\Delta_{\sigma,M}(y-x)\right] {\rm d}y
+\end{equation}
+where we note that on the right side, the derivative applies only to the $\Delta$ term. 
+Since this is an expansion of polynomials and weight functions, the derivative is analytic. 
 
 %-----------------------------------------------------------------------------------------
 \subsection{One-Dimensional}
+In a one-dimensional DAF application, we consider a continuous domain in $x$ from which
+we have have discrete set of abscissas where we have samples of the function $f(x)$. 
+
+The function $f(x)$ is known only at the set of discrete points $[x_n]$.
+There are many methods to fit these data points to an analytic function so that it is
+easier to work with. The DAF method has some advantages that make it very appealing
+for some cases. 
+
 
 Let's assume we have a set of coordinate points, $(x_0,f_0),(x_1,f_1),...$ that represent
 some measured data or a given function. The set of $x$ values we will describe as ${\bf x}$
@@ -204,13 +225,38 @@ Next, we replace the $\delta$ function with the expansion defined in equation
 \begin{eqnarray}
 f(\bar{x}_i) &=& \sum_j w_j \delta(\bar{x}_i-x_j)f(x_j) \\
 f(\bar{x}_i) &=& \sum_j w_j \Delta_{\sigma,M}\left(\frac{x_i-\bar{x}_j}{\sigma}\right)f(x_j) \\
-\bar{f}_i & = &  \sum_j {\bf D}_{\sigma M,ij} {\bf f}_j
+f_i & = &  \sum_j {\bf D}_{\sigma M,ij} {\bf f}_j
 \end{eqnarray}
 
-Where we have defined $D_{\sigma M, ij}$ as the combination of the integration weights, $w_j$ and 
+Where we have defined ${\bf D}_{\sigma M, ij}$ as the combination of the integration weights, $w_j$ and 
 the $\delta$ function expansion. 
+Note that $\sigma$ and $M$ are parameters that are used to tune the DAF method for 
+better accuracy, and the indices $i,j$ indicate the points in $x$ and $\bar{x}$ space. 
+For simplicity, from here on we drop the $\sigma$ and $M$ specifiers from the notation, 
+and define
+\begin{equation}
+\label{eqn_DAF_def0}
+{\bf D}_{ij} = w_j \Delta_{\sigma,M}(x_i-\bar{x}_j) = w_j \sum_{m=0}^M h_m H_m \left(\frac{x_i-\bar{x}_j}{\sigma}\right)e^{- \left(\frac{x_i-\bar{x}_j}{\sigma}\right)^2}
+\end{equation}
+and we define ${\bf D}_{ij}$ to be the {\it DAF Operator} in one dimension. 
 
+With the DAF operator defined by given parameters of $\sigma$ and $M$, we can see that it 
+is indexed by two labels, one for $x$ space and one for $\bar{x}$ space. Since we 
+included the integration weights into the definition, we can now write
+\begin{equation}
+f_j = \sum_i {\bf D}_{ij} f_i
+\end{equation}
+which is equivalent to a vector-vector multiply, 
 
+\begin{equation}
+f_j = \left(D_{0j}, D_{1j}, D_{2,j}, ...\right)
+\begin{pmatrix}
+f_0\\
+f_1\\
+f_2\\
+...
+\end{pmatrix}
+\end{equation}
 
 
 %-----------------------------------------------------------------------------------------
@@ -218,11 +264,11 @@ the $\delta$ function expansion.
 
 In a multi-dimensional application, we use the DAF to approximate a function such as
 \begin{equation}
-f(x,y,z) = \iiint f(x,y,z)\delta(x)\delta(y)\delta(z) {\rm d}x {\rm d}y {\rm d}z
+f(\bar{x},\bar{y},\bar{z}) = \iiint f(x,y,z)\delta(\bar{x}-x)\delta(\bar{y}-y)\delta(\bar{z}-z) {\rm d}x {\rm d}y {\rm d}z
 \end{equation}
 or in vector notation for simplicity: 
 \begin{equation}
-f({\bf r}) = \int_{\bf V} f({\bf r})\delta({\bf r}){\rm d}{\bf V}
+f({\bf \bar{r}}) = \int_{\bf V} f({\bf r})\delta({\bf \bar{r}}-{\bf r}){\rm d}{\bf r}
 \end{equation}
 where $\delta({\bf r}) = \delta(r_1)\delta(r_2)\delta(r_3)...$ and ${\bf V}$ is the
 multi-dimensional volume to which the DAF is being applied. 
@@ -230,7 +276,6 @@ multi-dimensional volume to which the DAF is being applied.
 In three spacial dimensions, these coordinates are typically x, y, and z, but the method is
 not limited to strictly spacial coordinates, nor is it limited to the number of
 dimensions. 
-
 
 
 %=========================================================================================
