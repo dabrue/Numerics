@@ -18,6 +18,7 @@ import scipy.special as sps
 import scipy.linalg as spla
 import multiprocessing as mp
 import daf_sigmaOpt
+import daf_integrate
 
 ##########################################################################################
 # PARAMETERS AND SETUP
