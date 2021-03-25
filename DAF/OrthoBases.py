@@ -2,7 +2,7 @@
 '''
 Routines for generating orthonormal basis functions
 
-Daniel Brue, 2021
+Daniel A. Brue, 2021
 
 This routine provides methods for calculating orthogonal polynomials and their derivatives
 at given sets of points. This is different than what comes out of scipy.special in that
