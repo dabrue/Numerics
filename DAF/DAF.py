@@ -165,7 +165,7 @@ def integration_weights(Xray,method='trapazoid',equalSpaced=False):
 
     else:
         print('ERROR: Unrecognized integration method = ',method)
-        print('check inputs to DAF.integration_weights'
+        print('check inputs to DAF.integration_weights')
         exit(1)
 
     return weights
@@ -276,6 +276,7 @@ def gen_Laguerre(Xray, M, DerOrder, sigma = None):
     pass
 #-----------------------------------------------------------------------------------------
 def gen_Chebyshev(Xray, M, DerOrder, sigma = None):
+    pass
 
 
 
