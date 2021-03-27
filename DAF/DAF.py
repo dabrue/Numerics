@@ -177,6 +177,7 @@ def gen_Hermite(Xray, Xbar, M, DerOrder, sigma = None):
     # get the expansion coefficients
     x = 0.0  # Hermite coefficients depend on H_n(0) terms, so get those from recursion.
     HC = _exp_Hermite_delta(s, sigma, M)
+
     return(np.array((1,1),dtype=np.float64))
 
 #-----------------------------------------------------------------------------------------
@@ -194,20 +195,21 @@ def gen_Chebyshev(Xray, M, DerOrder, sigma = None):
 
 class DAF:
 
-    def __init__(self,PolyBase:str,Xray:np.array,DerOrder=0,sigma=1.0,M=50):
+    def __init__(self,PolyBase:str,Xray:np.array,Xbar:np.array,DerOrder=0,sigma=1.0,M=50):
         self.PolyBase = PolyBase
         self.Xray = Xray
+        self.Xbar = Xbar
         self.DerOrder = DerOrder
         self.sigma=1.0
         self.ExpOrder = M           
         if (PolyBase == 'hermite'):
-            self.DAFMAT = gen_Hermite(Xray, M, sigma)
+            self.DAFMAT = gen_Hermite(Xray, Xbar, M, sigma)
         elif (PolyBase == 'legendre'):
-            self.DAFMAT = gen_Legendre(Xray, M)
+            self.DAFMAT = gen_Legendre(Xray, Xbar, M)
         elif (PolyBase == 'laguerre'):
-            self.DAFMAT = gen_Laguerre(Xray, M, sigma)
+            self.DAFMAT = gen_Laguerre(Xray, Xbar, M, sigma)
         elif (PolyBase == 'chebyshev'):
-            self.DAFMAT = gen_Chebyshev(Xray, M)
+            self.DAFMAT = gen_Chebyshev(Xray, Xbar, M)
         else:
             raise('ERROR: Unidentified Polynomial Expansion : ', PolyBase)
             exit()

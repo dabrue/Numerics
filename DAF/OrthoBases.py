@@ -33,6 +33,8 @@ class LegendreBasis:
         self.Order = Order
         self.normalized = normalized
         self.derivatives = derivatives
+        self.Polys = self._gen_P()
+        self.Wgts  = self._gen_wgt()
         self.BasisMat = self._gen_P()
 
         Sane, Errs  = self._Legendre_Init_Sanity_Check()
@@ -51,6 +53,10 @@ class LegendreBasis:
             #for i in range(len(X)):
             P[n,:] = ((2*n-1)*self.X*P[n-1,:] - (n-1)*P[n-2,:]) / n
         return(P)
+
+    def _gen_wgt(self):
+        wgts = np.ones_like(self.X)
+        return wgts
 
     def _Legendre_Init_Sanity_Check(self):
         Sane = True
@@ -91,7 +97,13 @@ class HermiteBasis:
         Npts = len(X)
         self.Npts = Npts
         self.DAFMAT = [np.zeros((Npts,Npts),dtype=np.float64),]
-        self.BasisMat = self._gen_H()
+        self.Polys = self._gen_H()
+        self.Wgts  = self._gen_wgt()
+        self.BasisMat = np.zeros_like(self.Polys)
+
+        for i in range(len(self.Polys)):
+            for j in range(len(self.Polys[i])):
+                self.BasisMat[i,j] = self.Polys[i,j]*self.Wgts[j]
 
         # Check that the inputs make sense...
         Sane, Errs = self._Hermite_Init_Sanity_Check()
@@ -109,6 +121,13 @@ class HermiteBasis:
             H[n,:] = 2*X*H[n-1,:] - 2*(n-1)*H[n-2,:]
         return H
 
+    def _gen_wgt(self):
+        wgt = np.zeros_like(self.X)
+        for i in range(self.Npts):
+            x = self.X[i]/self.sigma
+            wgt[i] = math.exp(-(x**2))
+        return wgt
+
     def _Hermite_Init_Sanity_Check(self):
         Sane = True
         Errors = []
@@ -119,26 +138,35 @@ if (__name__ == '__main__'):
 
     import matplotlib.pyplot as plt
     
+    Xmin = -10
+    Xmax =  10
+    Nx   = 101
+    dx = (Xmax-Xmin)/(Nx-1)
+    Xray = np.linspace(Xmin,Xmax,Nx)
+    Order = 5
+
+    Herm = HermiteBasis(Xray,[Xmin,Xmax],Order,1.0)
+    Hfuncs = Herm.BasisMat
+
+    fig1=plt.figure()
+    ax1 = fig1.add_subplot(1,1,1)
+    for i in range(Order):
+        plt.plot(Xray,Hfuncs[i])
+
+
     Xmin = -1
     Xmax =  1
     Nx   = 101
     dx = (Xmax-Xmin)/(Nx-1)
     Xray = np.linspace(Xmin,Xmax,Nx)
-    Order = 15
+    Order = 5
     LegP = LegendreBasis(Xray, [-1,1],Order)
     Pfuncs = LegP.BasisMat #LegP._gen_P(Order, Xray)
-
-    Herm = HermiteBasis(Xray,[-10,10],Order,1.0)
-    Hfuncs = Herm.BasisMat
 
     fig0=plt.figure()
     ax0 = fig0.add_subplot(1,1,1)
     for i in range(Order):
         plt.plot(Xray,Pfuncs[i,:])
 
-    fig1=plt.figure()
-    ax1 = fig1.add_subplot(1,1,1)
-    for i in range(Order):
-        plt.plot(Xray,Hfuncs[i,:])
 
     plt.show()
