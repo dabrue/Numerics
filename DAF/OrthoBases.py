@@ -105,6 +105,8 @@ class HermiteBasis:
             for j in range(len(self.Polys[i])):
                 self.BasisMat[i,j] = self.Polys[i,j]*self.Wgts[j]
 
+        self.weightf = _gen_H_weights()
+
         # Check that the inputs make sense...
         Sane, Errs = self._Hermite_Init_Sanity_Check()
         if (not Sane):
@@ -121,12 +123,12 @@ class HermiteBasis:
             H[n,:] = 2*X*H[n-1,:] - 2*(n-1)*H[n-2,:]
         return H
 
-    def _gen_wgt(self):
-        wgt = np.zeros_like(self.X)
+    def _gen_H_weights(self):
+        wgts = numpy.zeros_like(X)
         for i in range(self.Npts):
             x = self.X[i]/self.sigma
-            wgt[i] = math.exp(-(x**2))
-        return wgt
+            wgts[i] = math.exp(-(x**2))
+        return wgts
 
     def _Hermite_Init_Sanity_Check(self):
         Sane = True

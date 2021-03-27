@@ -19,6 +19,7 @@ import scipy.linalg as spla
 import multiprocessing as mp
 import daf_sigmaOpt
 import daf_integrate
+import OrthoBases
 
 ##########################################################################################
 # PARAMETERS AND SETUP
