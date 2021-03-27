@@ -93,6 +93,8 @@ class HermiteBasis:
         self.DAFMAT = [np.zeros((Npts,Npts),dtype=np.float64),]
         self.BasisMat = self._gen_H()
 
+        self.weightf = _gen_H_weights()
+
         # Check that the inputs make sense...
         Sane, Errs = self._Hermite_Init_Sanity_Check()
         if (not Sane):
@@ -108,6 +110,13 @@ class HermiteBasis:
         for n in range(2,orderp1):
             H[n,:] = 2*X*H[n-1,:] - 2*(n-1)*H[n-2,:]
         return H
+
+    def _gen_H_weights(self):
+        wgts = numpy.zeros_like(X)
+        for i in range(self.Npts):
+            x = self.X[i]/self.sigma
+            wgts[i] = math.exp(-(x**2))
+        return wgts
 
     def _Hermite_Init_Sanity_Check(self):
         Sane = True
