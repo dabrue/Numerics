@@ -34,7 +34,7 @@ class LegendreBasis:
         self.normalized = normalized
         self.derivatives = derivatives
         self.Polys = self._gen_P()
-        self.Wgts  = self._gen_wgt()
+        self.wgt_f = self._gen_wgt()
         self.BasisMat = self._gen_P()
 
         Sane, Errs  = self._Legendre_Init_Sanity_Check()
@@ -86,26 +86,25 @@ class HermiteBasis:
     See accompanying documentation appendix for proofs. 
     
     '''
-    def __init__(self, X, Xlimits, Order, sigma, normalized=False, derivatives=0):
-        self.X = X
+    def __init__(self, Xray, Xlimits, Order, sigma, normalized=False, derivatives=0):
+        self.Xray = Xray
         self.Xmin = Xlimits[0]
         self.Xmax = Xlimits[1]
         self.Order = Order
         self.sigma = sigma
         self.normalized = normalized
         self.derivatives = derivatives
-        Npts = len(X)
+        Npts = len(Xray)
         self.Npts = Npts
         self.DAFMAT = [np.zeros((Npts,Npts),dtype=np.float64),]
         self.Polys = self._gen_H()
-        self.Wgts  = self._gen_wgt()
         self.BasisMat = np.zeros_like(self.Polys)
+        self.wgt_f = self._gen_H_weights()
 
         for i in range(len(self.Polys)):
             for j in range(len(self.Polys[i])):
-                self.BasisMat[i,j] = self.Polys[i,j]*self.Wgts[j]
+                self.BasisMat[i,j] = self.Polys[i,j]*self.wgt_f[j]
 
-        self.weightf = _gen_H_weights()
 
         # Check that the inputs make sense...
         Sane, Errs = self._Hermite_Init_Sanity_Check()
@@ -114,19 +113,18 @@ class HermiteBasis:
 
     def _gen_H(self):
         orderp1 = self.Order + 1
-        X = self.X
-        H = np.zeros((orderp1,len(X)), dtype=np.float64)
+        H = np.zeros((orderp1,len(self.Xray)), dtype=np.float64)
         H[0,:] = 1.0
-        H[1,:] = 2*self.X
+        H[1,:] = 2*self.Xray
         # Now use recurrance relation to generate the rest of the functions
         for n in range(2,orderp1):
-            H[n,:] = 2*X*H[n-1,:] - 2*(n-1)*H[n-2,:]
+            H[n,:] = 2*self.Xray*H[n-1,:] - 2*(n-1)*H[n-2,:]
         return H
 
     def _gen_H_weights(self):
-        wgts = numpy.zeros_like(X)
+        wgts = np.zeros_like(self.Xray)
         for i in range(self.Npts):
-            x = self.X[i]/self.sigma
+            x = self.Xray[i]/self.sigma
             wgts[i] = math.exp(-(x**2))
         return wgts
 
@@ -134,6 +132,14 @@ class HermiteBasis:
         Sane = True
         Errors = []
         return Sane, Errors
+
+class ChebyshevBasis:
+
+    def __init__(self,Xray,Xlimits,Order, derivatives=0):
+        self.Xray = Xray
+        self.Xlimits = Xlimits
+        self.Order = Order
+        self.derivatives = derivatives
 
 ##########################################################################################
 if (__name__ == '__main__'):
