@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99d (TeX Live 2019/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: daf.aux
+A level-1 auxiliary file: lobatto_daf.aux
+A level-1 auxiliary file: simpsons_daf.aux
+The style file: apsrev.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: biblist.bib
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+You've used 22 entries,
+            3411 wiz_defined-function locations,
+            1282 strings with 13583 characters,
+and the built_in function-call counts, 14045 in all, are:
+= -- 803
+> -- 455
+< -- 72
++ -- 363
+- -- 110
+* -- 1877
+:= -- 1539
+add.period$ -- 22
+call.type$ -- 22
+change.case$ -- 98
+chr.to.int$ -- 34
+cite$ -- 24
+duplicate$ -- 1281
+empty$ -- 1208
+format.name$ -- 285
+if$ -- 2653
+int.to.chr$ -- 4
+int.to.str$ -- 23
+missing$ -- 193
+newline$ -- 81
+num.names$ -- 64
+pop$ -- 359
+preamble$ -- 1
+purify$ -- 88
+quote$ -- 0
+skip$ -- 511
+stack$ -- 0
+substring$ -- 420
+swap$ -- 990
+text.length$ -- 54
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 124
+warning$ -- 0
+while$ -- 59
+width$ -- 0
+write$ -- 228

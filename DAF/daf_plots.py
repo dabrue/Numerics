@@ -25,7 +25,7 @@ if (__name__ == '__main__'):
     axH = figH.add_subplot(1,1,1)
     for i in range(Order):
         axH.plot(Xray,HBase[i])
-    plt.show()
+    #plt.show()
 
     # Construct delta function
     hco = DAF.HdeltaCoef_part
@@ -36,6 +36,22 @@ if (__name__ == '__main__'):
     figHD = plt.figure()
     axHD = figHD.add_subplot(1,1,1)
     plt.plot(Xray,hdelta)
+    #plt.show()
+
+    # Make plots of the dirac delta function 
+    Xray = np.linspace(-10,10,11)
+    Xbar = np.linspace(-10,10,1001)
+    MaxM = 11
+    sigma = 1.0
+    DerOrder = 0
+    HermExpSet = []
+    H = DAF.DAF_Hermite(Xray,Xbar,DerOrder=2,sigma=1.0,M=51)
+
+    print(H)
+    figHD2 = plt.figure()
+    axHD2 = figHD2.add_subplot(1,1,1)
+    for i in range(len(H.delta_mat)):
+        plt.plot(Xbar,H.delta_mat[i,:])
     plt.show()
     
 
@@ -51,4 +67,4 @@ if (__name__ == '__main__'):
     axP = figP.add_subplot(1,1,1)
     for i in range(Order):
         axP.plot(Xray,P.BasisMat[i])
-    plt.show()
+    #plt.show()

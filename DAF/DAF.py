@@ -72,41 +72,9 @@ for i in range(0,MaxLegendreExpansion,2):
 ##########################################################################################
 # SUBROUTINES FOR DAF GENERATION, INTERNAL USE INTENDED
 
-#-----------------------------------------------------------------------------------------
-def _exp_Hermite_delta(x,sigma,M):
-
-    # Recurrance: H[n+1] = 2*x*H[n] = 2*n*H[n-1]
-
-    # NOTE This routine uses math.factorial(n) which will fail for n > 170 
-    
-    xs = x/sigma  # The argument for the expansion is x/sigma
-    H=[]
-    H.append(1.0)
-    H.append(xs)
-
-    # Use the recursion formula to get values of hermite polinomials at give x 
-    for n in range(2,M+1):
-        H.append( (2*xs*H[-1] - 2*(n-2)*H[-2]) )
-
-    # Add the normalization factor so that int(Hn Hm W) = 1
-    for n in range(0,len(H),2):
-        try:
-            H[n] *= (1.0/(2**n * math.factorial(n) * rtpi))
-        except OverflowError:
-            print("WARNING: Overflow in factorial")
-            print(" Order of Hermite Polynomial Expansion is ",M)
-            print(" Expansion stopped at n=",n-1)
-            print(" This calculation will continue with this expansion limit.")
-            break
-        except:
-            raise
-            
-        
-    H = np.array(H)  # Change to numpy data type
-    return H
 
 #-----------------------------------------------------------------------------------------
-def _gen_Legendre_delta(x,M):
+def _gen_Legendre_coefs(x,M):
 
     # Recurrance: P[n+1] = (1/(n+1)) * ((2*n+1)*x*P[n] - n*P[n-1])
 
@@ -120,7 +88,7 @@ def _gen_Legendre_delta(x,M):
     return PC
 
 #-----------------------------------------------------------------------------------------
-def _gen_Laguerre_delta(x,M):
+def _gen_Laguerre_coefs(x,M):
 
     # Recurrance: (n+1)L[n+1] = (2*n+1-x)L[n] - n*L[n-1]
     L=[]
@@ -132,7 +100,7 @@ def _gen_Laguerre_delta(x,M):
     return L
 
 #-----------------------------------------------------------------------------------------
-def _gen_ChebyT_delta(x,M):
+def _gen_ChebyT_coefs(x,M):
 
     # Recurrance: T[n+1] = 2*x*T[n] - T[n-1]
 
@@ -149,37 +117,6 @@ def _gen_ChebyT_delta(x,M):
 
 # NOTE: The matrix generation routines are excellent candidates for parallelization. 
 
-#-----------------------------------------------------------------------------------------
-def gen_Hermite(Xray, Xbar, M, DerOrder, sigma = None):
-    '''
-    This routine generates the DAF matrices using a Hermite Polynomial basis. 
-
-    INPUT:
-    Xray - Points where the value of f is known. 
-    Xbar - Points for desired values of f or its derivatives.
-    M - Expansion limit, the number of Hermite polynomials used for delta(x)
-    DerOrder - highest order of derivative to be calculated. 
-    sigma - scaling factor for the x domain to be used to increase accuracy of delta
-
-    OUTPUT:
-    HDAF - list of np matrices. The index of the list corresponds to derivative order
-
-    NOTES: Frequenly, Xray and Xbar are the same array, but they do not have to be. 
-    This routine does makes the assumption they are not, and there is no computational
-    benefit here, e.g. symmetry. I'll add options for taking advantage of 
-    symmetries and periodicities in an updated version.
-    '''
-
-    # If sigma is specified, use it, otherwise find an optimal value
-    if (not sigma):
-        sigma = daf_sigmaOpt.sigmaOptHermite(Xray, M)
-    sigma=1.0
-
-    # get the expansion coefficients
-    x = 0.0  # Hermite coefficients depend on H_n(0) terms, so get those from recursion.
-    HC = _exp_Hermite_delta(s, sigma, M)
-
-    return(np.array((1,1),dtype=np.float64))
 
 #-----------------------------------------------------------------------------------------
 def gen_Legendre(Xray, M, DerOrder):
@@ -194,26 +131,113 @@ def gen_Chebyshev(Xray, M, DerOrder, sigma = None):
 
 
 
-class DAF:
+class DAF_Hermite:
+    '''
+        INPUT:
+        Xray - Points where the value of f is known. 
+        Xbar - Points for desired values of f or its derivatives.
+        M - Expansion limit, the number of Hermite polynomials used for delta(x)
+        DerOrder - highest order of derivative to be calculated. 
+        sigma - scaling factor for the x domain to be used to increase accuracy of delta
 
-    def __init__(self,PolyBase:str,Xray:np.array,Xbar:np.array,DerOrder=0,sigma=1.0,M=50):
-        self.PolyBase = PolyBase
+        OUTPUT:
+        HDAF - list of np matrices. The index of the list corresponds to derivative order
+    '''
+
+    def __init__(self,Xray:np.array,Xbar:np.array,DerOrder=0,sigma=1.0,M=50):
         self.Xray = Xray
         self.Xbar = Xbar
+        self.Nray = len(Xray)
+        self.Nbar = len(Xbar)
         self.DerOrder = DerOrder
         self.sigma=1.0
-        self.ExpOrder = M           
-        if (PolyBase == 'hermite'):
-            self.DAFMAT = gen_Hermite(Xray, Xbar, M, sigma)
-        elif (PolyBase == 'legendre'):
-            self.DAFMAT = gen_Legendre(Xray, Xbar, M)
-        elif (PolyBase == 'laguerre'):
-            self.DAFMAT = gen_Laguerre(Xray, Xbar, M, sigma)
-        elif (PolyBase == 'chebyshev'):
-            self.DAFMAT = gen_Chebyshev(Xray, Xbar, M)
-        else:
-            raise('ERROR: Unidentified Polynomial Expansion : ', PolyBase)
-            exit()
+        self.ExpOrder = M
+        self.MaxExpand = M + DerOrder + 1
+
+        self.Hermite_mat = self.gen_Hermite_mat()
+        self.delta_coefs = self.gen_delta_coefs()
+        self.delta_mat = self.gen_delta_mat()
+
+    def gen_delta_mat(self):
+        dmat = np.zeros((self.Nray,self.Nbar),dtype=np.double)
+        for i in range(self.Nray):
+            for j in range(self.Nbar):
+                for m in range(self.ExpOrder):
+                    dmat[i,j] += self.delta_coefs[m]*self.Hermite_mat[i,j,m]
+                dmat[i,j] *= math.exp(-((self.Xray[i]-self.Xbar[j])/self.sigma)**2)
+
+        return dmat
+
+    #-----------------------------------------------------------------------------------------
+    def gen_Hermite_mat(self):
+        '''
+        NOTES: Frequenly, Xray and Xbar are the same array, but they do not have to be. 
+        This routine does makes the assumption they are not, and there is no computational
+        benefit here, e.g. symmetry. I'll add options for taking advantage of 
+        symmetries and periodicities in an updated version.
+
+        Recurrance Relationships:
+        H[n+1] = 2*x*H[n] - 2*n*H[n-1]
+        H'[n] = 2*n*H[n-1]
+        '''
+
+        Xray = self.Xray
+        Xbar = self.Xbar
+        Nray = self.Nray
+        Nbar = self.Nbar
+        sigma = self.sigma
+        ME = self.MaxExpand
+
+
+        # If sigma is specified, use it, otherwise find an optimal value
+        if (not sigma):
+            sigma = daf_sigmaOpt.sigmaOptHermite(Xray, M)
+        sigma=1.0
+
+        # Get matrix of Hermite functions at all points up to order M
+        HermiteMat = np.zeros((Nray,Nbar,ME+1),dtype=np.double)
+        for i in range(Nray):
+            for j in range(Nbar):
+                arg = (Xray[i]-Xbar[j])/sigma
+                HermiteMat[i,j,0] = 1.0
+                HermiteMat[i,j,1] = 2.0*arg
+                for m in range(2,ME):
+                    HermiteMat[i,j,m] = 2*arg*HermiteMat[i,j,m-1]-2*(m-1)*HermiteMat[i,j,m-2]
+
+        return HermiteMat
+
+    #-----------------------------------------------------------------------------------------
+    def gen_delta_coefs(self):
+
+        # Recurrance: H[n+1] = 2*x*H[n] = 2*n*H[n-1]
+
+        # NOTE This routine uses math.factorial(n) which will fail for n > 170 
+        
+        H=np.zeros(self.MaxExpand,dtype=np.double)
+        H[0] = 1.0
+        H[1] = 0.0
+
+        # Use the recursion formula to get values of hermite polinomials at give x 
+        for n in range(2,self.MaxExpand):
+            H[n]=((2*0.0*H[n-1] - 2*(n-1)*H[n-2]))
+
+        # Add the normalization factor so that int(Hn Hm W) = 1
+        for n in range(0,len(H),2):
+            try:
+                H[n] *= (1.0/(2**n * math.factorial(n) * rtpi))
+            except OverflowError:
+                print("WARNING: Overflow in factorial")
+                print(" Order of Hermite Polynomial Expansion is ",M)
+                print(" Expansion stopped at n=",n-1)
+                print(" This calculation will continue with this expansion limit.")
+                break
+            except:
+                raise
+                
+            
+        H = np.array(H,dtype=np.float64)  # Change to numpy data type
+        return H
+
 
 ##########################################################################################
 if (__name__ == '__main__'):
