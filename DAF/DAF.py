@@ -112,16 +112,20 @@ def _gen_ChebyT_coefs(x,M):
 
 ##########################################################################################
 class DAF_Chebyshev:
+    def __init__(self):
+        pass
 ##########################################################################################
 class DAF_Laguerre:
+    def __init__(self):
+        pass
 ##########################################################################################
 class DAF_Legendre:
 
-'''
-(n+1)*P[n+1] = (2*n+1)*x*P[n] - n*P[n-1]
+    '''
+    (n+1)*P[n+1] = (2*n+1)*x*P[n] - n*P[n-1]
 
-P'[n] = (n/(x**2-1))*(x*P[n] -P[n-1])
-'''
+    P'[n] = (n/(x**2-1))*(x*P[n] -P[n-1])
+    '''
 
     def __init__(self,Xray:np.array,Xbar:np.array,DerOrder=0,M=50):
         self.Xray = Xray
@@ -131,9 +135,40 @@ P'[n] = (n/(x**2-1))*(x*P[n] -P[n-1])
         self.DerOrder = DerOrder
         self.ExpOrder = M
         self.MaxExpand = M + DerOrder + 1
+        self.delta_coefs = self.gen_delta_coefs()
+        self.Legendre_mat = self.gen_Legendre_mat()
+        self.delta_mat = self.gen_delta_mat()
+
+    def gen_delta_coefs(self):
+        delta_coefs = np.zeros((self.Nray,self.MaxExpand),dtype=np.double)
+        for i in range(self.Nray):
+            x = self.Xray[i]
+            for m in range(self.MaxExpand):
+# TODO change following line to reccursion.
+                delta_coefs[i,m] = sps.eval_legendre(m,x)*(2*m+1)
+        return delta_coefs
 
     def gen_Legendre_mat(self):
-        LegendreMat = np.zeros((Nray,Nbar,ME+1),dtype=np.double)
+        ME = self.MaxExpand
+        LegendreMat = np.zeros((self.Nray,self.Nbar,ME+1),dtype=np.double)
+        for i in range(self.Nray):
+            for j in range(self.Nbar):
+                arg = (self.Xray[i]-self.Xbar[j])
+                LegendreMat[i,j,0] = 1.0
+                LegendreMat[i,j,1] = 1.0*arg
+                for m in range(2,ME):
+                    LegendreMat[i,j,m] = ((2*m-1)*arg*LegendreMat[i,j,m-1]-(m-1)*LegendreMat[i,j,m-2]) / m
+        return LegendreMat
+
+    def gen_delta_mat(self):
+        dmat = np.zeros((self.Nray,self.Nbar),dtype=np.double)
+        for i in range(self.Nray):
+            for j in range(self.Nbar):
+                for m in range(self.ExpOrder):
+                    dmat[i,j] += self.delta_coefs[i,m]*self.Legendre_mat[i,j,m]
+                #dmat[i,j] *= math.exp(-((self.Xray[i]-self.Xbar[j])/self.sigma)**2)
+
+        return dmat
 
 
 ##########################################################################################

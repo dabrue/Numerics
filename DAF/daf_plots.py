@@ -52,14 +52,14 @@ if (__name__ == '__main__'):
     axHD2 = figHD2.add_subplot(1,1,1)
     for i in range(len(H.delta_mat)):
         plt.plot(Xbar,H.delta_mat[i,:])
-    plt.show()
+    #plt.show()
     
 
-    ###################################################################################################
+    ######################################################################################
     # LEGENDRE POLYNOMIAL PLOTS
     Order = 10
     Xlimits = [-1,1]
-    Npts = 1001
+    Npts = 101
     Xray = np.linspace(Xlimits[0],Xlimits[-1],Npts,dtype=np.float64)
     P = OrthoBases.LegendreBasis(Xray, Xlimits, Order, normalized=False, derivatives=0)
 
@@ -68,3 +68,19 @@ if (__name__ == '__main__'):
     for i in range(Order):
         axP.plot(Xray,P.BasisMat[i])
     #plt.show()
+
+    Nray = 11
+    Nbar = 101
+    Xray = np.linspace(Xlimits[0],Xlimits[-1],Nray,dtype=np.float64)
+    Xbar = np.linspace(Xlimits[0],Xlimits[-1],Nbar,dtype=np.float64)
+    P = DAF.DAF_Legendre(Xray,Xbar)
+
+    figPD2 = plt.figure()
+    axPD2 = figPD2.add_subplot(1,1,1)
+    for i in range(len(P.delta_mat)):
+        plt.plot(Xbar,P.delta_mat[i,:])
+    plt.show()
+    
+
+
+    ######################################################################################
