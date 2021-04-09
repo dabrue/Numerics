@@ -31,6 +31,16 @@ MaxLegendreExpansion = 101
 MaxLaguerreExpansion = 101
 MaxChebyshevExpansion = 101
 
+MaxSystemExpansion = 0
+
+for i in range(10000):
+    try:
+        a = math.factorial(i)
+    except OverflowError:
+        MaxSystemExpansion = i-1
+    except:
+        raise
+
 #-----------------------------------------------------------------------------------------
 # The DAF routine uses dirac delta functions expanded in terms of orthonormal polynomials.
 # The coefficients for this expansion are precomputed here. 
@@ -57,20 +67,8 @@ for i in range(0,MaxHermiteExpansion,2):
     except:
         raise
 
-'''
-LdeltaC_part = np.zeros(MaxLaguerreExpansion, dtype=np.float64)
-for i in range(0,MaxLaguerreExpansion,2):
-    LdeltaCoef_part[i] = sps.eval_laguerre(i,0.0)/
-
-TdeltaC = np.zeros(MaxLaguerreExpansion, dtype=np.float64)
-
-PdeltaC = np.zeros(MaxLaguerreExpansion, dtype=np.float64)
-for i in range(0,MaxLegendreExpansion,2):
-    PdeltaC[i] = sps.eval_legendre(i,0.0) * (2*i + 1) / 2
-'''
-
 ##########################################################################################
-# SUBROUTINES FOR DAF GENERATION, INTERNAL USE INTENDED
+# DAF classes
 
 
 #-----------------------------------------------------------------------------------------
@@ -113,24 +111,32 @@ def _gen_ChebyT_coefs(x,M):
     return T
 
 ##########################################################################################
-# MAIN ROUTINES FOR GENERATING DAF MATRICES
+class DAF_Chebyshev:
+##########################################################################################
+class DAF_Laguerre:
+##########################################################################################
+class DAF_Legendre:
 
-# NOTE: The matrix generation routines are excellent candidates for parallelization. 
+'''
+(n+1)*P[n+1] = (2*n+1)*x*P[n] - n*P[n-1]
+
+P'[n] = (n/(x**2-1))*(x*P[n] -P[n-1])
+'''
+
+    def __init__(self,Xray:np.array,Xbar:np.array,DerOrder=0,M=50):
+        self.Xray = Xray
+        self.Xbar = Xbar
+        self.Nray = len(Xray)
+        self.Nbar = len(Xbar)
+        self.DerOrder = DerOrder
+        self.ExpOrder = M
+        self.MaxExpand = M + DerOrder + 1
+
+    def gen_Legendre_mat(self):
+        LegendreMat = np.zeros((Nray,Nbar,ME+1),dtype=np.double)
 
 
-#-----------------------------------------------------------------------------------------
-def gen_Legendre(Xray, M, DerOrder):
-    pass
-
-#-----------------------------------------------------------------------------------------
-def gen_Laguerre(Xray, M, DerOrder, sigma = None):
-    pass
-#-----------------------------------------------------------------------------------------
-def gen_Chebyshev(Xray, M, DerOrder, sigma = None):
-    pass
-
-
-
+##########################################################################################
 class DAF_Hermite:
     '''
         INPUT:
@@ -141,7 +147,7 @@ class DAF_Hermite:
         sigma - scaling factor for the x domain to be used to increase accuracy of delta
 
         OUTPUT:
-        HDAF - list of np matrices. The index of the list corresponds to derivative order
+        TODO 
     '''
 
     def __init__(self,Xray:np.array,Xbar:np.array,DerOrder=0,sigma=1.0,M=50):
