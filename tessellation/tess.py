@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+'''
+Routines for Delaunay tessellation and subsequent integration
+
+Daniel A. Brue, April 2021
+'''
 import numpy as np
 import scipy as sp
 import scipy.spatial as spspace
@@ -25,7 +30,6 @@ def point_to_line(p1,p2,pt):
         b = 1.0
         c = slope*p1[0]-p1[1]
         dist = abs( (a*pt[0]+b*pt[1] + c))/math.sqrt(a**2+b**2)
-        print('slope,abc,dist',slope,a,b,c,dist)
     return dist
 
 #-----------------------------------------------------------------------------------------
@@ -33,7 +37,6 @@ def triangle_area(p1,p2,p3):
     base = math.sqrt((p2[0]-p1[0])**2 + (p2[1]-p1[1])**2)
     height = point_to_line(p1,p2,p3)
     area = base * height / 2
-    print('base, height, area',base,height,area)
     return area
 
 #-----------------------------------------------------------------------------------------
