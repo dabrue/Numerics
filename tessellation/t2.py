@@ -5,6 +5,7 @@ import scipy as sp
 import scipy.spatial as spspace
 import scipy.special as sps
 import matplotlib.pyplot as plt
+import matplotlib.cm as mpcm
 import random
 import tess
 #from mpl_toolkits.mplot3d import Axes3D
@@ -112,7 +113,7 @@ if (__name__ == '__main__'):
     F_Trig = f_trig(Tess.points)
 
     figT3 =plt.figure(figsize=(10,10))
-    axT3 = figT1.add_subplot(projection='3d')
+    axT3 = figT3.add_subplot(projection='3d')
     axT3.scatter(Tess.points[:,0],Tess.points[:,1],F_Trig,marker='o')
 
     figT4 =plt.figure(figsize=(10,10))
@@ -141,4 +142,50 @@ if (__name__ == '__main__'):
         plt.plot(lines[i][0],lines[i][1],lines[i][2],'k-')
 
     axT4.scatter(Tess.points[:,0],Tess.points[:,1],F_Trig,marker='o')
+
+    Nvis = 1001
+    Xvis=np.linspace(Xmin,Xmax,Nvis)
+    Yvis=np.linspace(Ymin,Ymax,Nvis)
+    Xray,Yray = np.meshgrid(Xvis,Yvis)
+    Npts = len(Xray)
+    Zray = np.sin(Xray)+np.cos(Yray)
+    #visGrid = np.zeros([Nvis**2,2],dtype=np.float)
+    #k=-1
+    #for i in range(Nvis):
+    #    for j in range(Nvis):
+    #        k += 1
+    #        visGrid[k,0] = Xvis[i]
+    #        visGrid[k,1] = Yvis[j]
+    #Npts = len(visGrid)
+    #Zvis = f_trig(visGrid)
+
+
+    figT5 =plt.figure(figsize=(10,10))
+    axT5 = figT5.add_subplot(projection='3d')
+    axT5.plot_surface(Xray,Yray,Zray,cmap=mpcm.viridis)
+    lines=[]
+    for i in range(len(Tess.simplices)):
+        ia = Tess.simplices[i,0]
+        ib = Tess.simplices[i,1]
+        ic = Tess.simplices[i,2]
+        a = Tess.points[ia]
+        b = Tess.points[ib]
+        c = Tess.points[ic]
+        line1x = [a[0],b[0]]
+        line1y = [a[1],b[1]]
+        line1z = [F_Trig[ia],F_Trig[ib]]
+        lines.append([line1x,line1y,line1z])
+        line1x = [b[0],c[0]]
+        line1y = [b[1],c[1]]
+        line1z = [F_Trig[ib],F_Trig[ic]]
+        lines.append([line1x,line1y,line1z])
+        line1x = [c[0],a[0]]
+        line1y = [c[1],a[1]]
+        line1z = [F_Trig[ic],F_Trig[ia]]
+        lines.append([line1x,line1y,line1z])
+    for i in range(len(lines)):
+        plt.plot(lines[i][0],lines[i][1],lines[i][2],'k-')
+    axT5.scatter(Tess.points[:,0],Tess.points[:,1],F_Trig,marker='o')
+    
+
     plt.show()
