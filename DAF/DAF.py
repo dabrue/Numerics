@@ -67,8 +67,6 @@ for i in range(0,MaxHermiteExpansion,2):
     except:
         raise
 
-##########################################################################################
-# DAF classes
 
 
 #-----------------------------------------------------------------------------------------
@@ -111,13 +109,28 @@ def _gen_ChebyT_coefs(x,M):
     return T
 
 ##########################################################################################
+# DAF classes
+class DAF_Trig:
+
+    def __init__(self,Xray,Xbar,DerOrder=0,M=500):
+        self.Xray = Xray
+        self.Xbar = Xbar
+        self.Nray = len(Xray)
+        self.Nbar = len(Xbar)
+        self.DerOrder = DerOrder
+        self.ExpOrder = M
+        self.MaxExpand = M 
+
+
 class DAF_Chebyshev:
     def __init__(self):
         pass
+
 ##########################################################################################
 class DAF_Laguerre:
     def __init__(self):
         pass
+
 ##########################################################################################
 class DAF_Legendre:
 
