@@ -2,6 +2,8 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
 \newcommand{\rtpi}{\ensuremath{\sqrt{\pi}}}
 \newcommand{\intl}{\int\displaylimits}
 \newcommand{\intunit}{\ensuremath{\int_{-1}^{1}}}
@@ -227,6 +229,12 @@ f(\bar{x}_i) &=& \sum_j w_j \delta(\bar{x}_i-x_j)f(x_j) \\
 f(\bar{x}_i) &=& \sum_j w_j \Delta_{\sigma,M}\left(\frac{x_i-\bar{x}_j}{\sigma}\right)f(x_j) \\
 f_i & = &  \sum_j {\bf D}_{\sigma M,ij} {\bf f}_j
 \end{eqnarray}
+
+\begin{figure}
+\includegraphics{hdeltas.jpg}
+\caption{Delta functions at a given set of $x$ points.}
+\label{fig:hdeltas}
+\end{figure}
 
 Where we have defined ${\bf D}_{\sigma M, ij}$ as the combination of the integration weights, $w_j$ and 
 the $\delta$ function expansion. 
