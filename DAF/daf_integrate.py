@@ -10,7 +10,7 @@ import scipy.integrate as spint
 import unittest as ut
 
 #-----------------------------------------------------------------------------------------
-def integration_weights(Xray,method='trapazoid',equalSpaced=False):
+def integration_weights(Xray,method='trapazoidal',equalSpaced=False):
 
     weights = np.zeros_like(Xray)
 

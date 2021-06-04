@@ -7,6 +7,10 @@ import OrthoBases
 import matplotlib.pyplot as plt
 import matplotlib.cm as mpcm
 import random
+import math
+
+pi = math.pi
+rtpi = math.sqrt(math.pi)
 
 
     # Make plots for papers and documentation
@@ -47,7 +51,7 @@ def hermite_plots():
     sigma = 1.0
     DerOrder = 0
     HermExpSet = []
-    H = DAF.DAF_Hermite(Xray,Xbar,DerOrder=2,sigma=1.0,M=51)
+    H = DAF.DAF_1D_Hermite(Xray,Xbar,DerOrder=2,sigma=1.0,M=51)
 
     print(H)
     figHD2 = plt.figure()
@@ -77,7 +81,7 @@ def legendre_plots():
     Nbar = 101
     Xray = np.linspace(Xlimits[0],Xlimits[-1],Nray,dtype=np.float64)
     Xbar = np.linspace(Xlimits[0],Xlimits[-1],Nbar,dtype=np.float64)
-    P = DAF.DAF_Legendre(Xray,Xbar)
+    P = DAF.DAF_1D_Legendre(Xray,Xbar)
 
     figPD2 = plt.figure()
     axPD2 = figPD2.add_subplot(1,1,1)
@@ -109,8 +113,8 @@ def hermite_2D_plots():
     Xbar = np.linspace(Xmin,Xmax,Nxb)
     Ybar = np.linspace(Ymin,Ymax,Nyb)
 
-    HX = DAF.DAF_Hermite(Xray,Xbar,sigma=1.0,M=M)
-    HY = DAF.DAF_Hermite(Yray,Ybar,sigma=1.0,M=M)
+    HX = DAF.DAF_1D_Hermite(Xray,Xbar,sigma=1.0,M=M)
+    HY = DAF.DAF_1D_Hermite(Yray,Ybar,sigma=1.0,M=M)
 
 
     X=np.zeros([Nxb,Nyb],dtype=np.float32)
@@ -148,8 +152,8 @@ def hermite_2D_plots():
         Xrand[i] = random.random()*(Xmax-Xmin)+Xmin
         Yrand[i] = random.random()*(Ymax-Ymin)+Ymin
 
-    HX1 = DAF.DAF_Hermite(Xrand,Xbar,sigma=1.0,M=M)
-    HY1 = DAF.DAF_Hermite(Yrand,Ybar,sigma=1.0,M=M)
+    HX1 = DAF.DAF_1D_Hermite(Xrand,Xbar,sigma=1.0,M=M)
+    HY1 = DAF.DAF_1D_Hermite(Yrand,Ybar,sigma=1.0,M=M)
     Z2=np.zeros([Nxb,Nyb],dtype=np.float32)
     print('SHAPES HX,HY',HX1.delta_mat.shape, HY1.delta_mat.shape)
     for k in range(Ndeltas):
@@ -198,9 +202,27 @@ def hermite_1D_compare(X,Fgiven,Fcalc):
 def hermite_2D_compare(X,Y,Fgiven,Fcalc):
     pass
 
+def trig_plots():
+    Xmin = -pi
+    Xmax = pi
+    Order = 100
+    Nray = 11
+    Nbar = 1001
+    Xray = np.linspace(Xmin,Xmax,Nray)
+    Xbar = np.linspace(Xmin,Xmax,Nbar)
+
+    scdaf = DAF.DAF_1D_Trig(Xray,Xbar)
+    fig0 = plt.figure(figsize=(10,10))
+    ax0 = fig0.add_subplot(1,1,1)
+    for i in range(Nray):
+        plt.plot(Xbar,scdaf.delta_mat[i,:])
+    plt.show()
+
+
 if (__name__ == '__main__'):
-    #rtn = hermite_plots()
-    #rtn = legendre_plots()
+    rtn = hermite_plots()
+    rtn = legendre_plots()
     rtn = hermite_2D_plots()
+    rtn = trig_plots()
 
 

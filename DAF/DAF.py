@@ -67,8 +67,6 @@ for i in range(0,MaxHermiteExpansion,2):
     except:
         raise
 
-
-
 #-----------------------------------------------------------------------------------------
 def _gen_Legendre_coefs(x,M):
 
@@ -110,9 +108,9 @@ def _gen_ChebyT_coefs(x,M):
 
 ##########################################################################################
 # DAF classes
-class DAF_Trig:
+class DAF_1D_Trig:
 
-    def __init__(self,Xray,Xbar,DerOrder=0,M=500):
+    def __init__(self,Xray,Xbar,DerOrder=0,M=500,intmethod='trapazoidal'):
         self.Xray = Xray
         self.Xbar = Xbar
         self.Nray = len(Xray)
@@ -120,19 +118,65 @@ class DAF_Trig:
         self.DerOrder = DerOrder
         self.ExpOrder = M
         self.MaxExpand = M 
+        self.delta_mat = self.gen_delta0_mat()
+        self.daf_mat = self.gen_DAF_mat()
+
+    def gen_delta0_mat(self):
+        dmat = np.zeros([self.Nray,self.Nbar],dtype=np.float64)
+        for i in range(self.Nray):
+            for m in range(self.ExpOrder):
+                dmat[i,:] += np.sin(m*self.Xbar)*np.sin(m*self.Xray[i])/math.pi
+                dmat[i,:] += np.cos(m*self.Xbar)*np.cos(m*self.Xray[i])/math.pi
+        dmat += -1/(2*math.pi)  # correction for m=0 cos term
+        return dmat
+
+    def gen_delta1_mat(self):
+        dmat = np.zeros([self.Nray,self.Nbar],dtype=np.float64)
+        for i in range(self.Nray):
+            for m in range(self.ExpOrder):
+                dmat[i,:] +=  m*np.cos(m*self.Xbar)*np.sin(m*self.Xray[i])/math.pi
+                dmat[i,:] += -m*np.sin(m*self.Xbar)*np.cos(m*self.Xray[i])/math.pi
+        return dmat
+
+    def gen_delta2_mat(self):
+        dmat = np.zeros([self.Nray,self.Nbar],dtype=np.float64)
+        for i in range(self.Nray):
+            for m in range(self.ExpOrder):
+                dmat[i,:] += -m*m*np.sin(m*self.Xbar)*np.sin(m*self.Xray[i])/math.pi
+                dmat[i,:] += -m*m*np.cos(m*self.Xbar)*np.cos(m*self.Xray[i])/math.pi
+        return dmat
+
+    def gen_delta3_mat(self):
+        dmat = np.zeros([self.Nray,self.Nbar],dtype=np.float64)
+        for i in range(self.Nray):
+            for m in range(self.ExpOrder):
+                dmat[i,:] += -m*m*m*np.cos(m*self.Xbar)*np.sin(m*self.Xray[i])/math.pi
+                dmat[i,:] +=  m*m*m*np.sin(m*self.Xbar)*np.cos(m*self.Xray[i])/math.pi
+        return dmat
 
 
-class DAF_Chebyshev:
+    def gen_DAF_mat(self):
+        # The DAF matrix is the delta matrix with appropriate integration weights
+        # The weights depend on the integration method. 
+        wgts = daf_integrate.integration_weights(self.Xray)
+        dafmat = np.zeros_like(self.delta_mat)
+        for i in range(self.Nray):
+            dafmat[i,:] *= wgts[i]
+        return dafmat
+        
+
+
+class DAF_1D_Chebyshev:
     def __init__(self):
         pass
 
 ##########################################################################################
-class DAF_Laguerre:
+class DAF_1D_Laguerre:
     def __init__(self):
         pass
 
 ##########################################################################################
-class DAF_Legendre:
+class DAF_1D_Legendre:
 
     '''
     (n+1)*P[n+1] = (2*n+1)*x*P[n] - n*P[n-1]
@@ -185,7 +229,7 @@ class DAF_Legendre:
 
 
 ##########################################################################################
-class DAF_Hermite:
+class DAF_1D_Hermite:
     '''
         INPUT:
         Xray - Points where the value of f is known. 
@@ -295,10 +339,5 @@ class DAF_Hermite:
 
 ##########################################################################################
 if (__name__ == '__main__'):
-
-    import re
-    import random
-    import matplotlib.pyplot as plt
-    import daf_sigmaOpt
 
     pass
